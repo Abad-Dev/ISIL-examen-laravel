@@ -32,4 +32,10 @@ class Categoria extends Model
     {
         return $this->hasMany(Presupuesto::class, 'categoria_id');
     }
+
+    // hasOne: la transaccion mas reciente registrada en esta categoria.
+    public function ultimaTransaccion()
+    {
+        return $this->hasOne(Transaccion::class, 'categoria_id')->latestOfMany('fecha');
+    }
 }
