@@ -42,8 +42,15 @@ return new class extends Migration
             $table->dropForeign(['categoria_id']);
         });
 
+        if (Schema::getConnection()->getDriverName() === 'pgsql') {
+            DB::statement('ALTER TABLE transacciones ALTER COLUMN categoria_id DROP NOT NULL');
+        } else {
+            Schema::table('transacciones', function (Blueprint $table) {
+                $table->foreignId('categoria_id')->nullable()->change();
+            });
+        }
+
         Schema::table('transacciones', function (Blueprint $table) {
-            $table->foreignId('categoria_id')->nullable()->change();
             $table->foreign('categoria_id')->references('id')->on('categorias')->restrictOnDelete();
         });
     }

@@ -21,5 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (Throwable $exception): void {
+            if (app()->environment('production')) {
+                logger()->error($exception->getMessage(), [
+                    'exception' => $exception,
+                    'url' => request()->fullUrl(),
+                ]);
+            }
+        });
     })->create();

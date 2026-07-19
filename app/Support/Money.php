@@ -24,11 +24,15 @@ class Money
         $locale = config('money.locale', 'es_PE');
 
         if (class_exists(\NumberFormatter::class)) {
-            $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
-            $formatted = $formatter->formatCurrency($amount, static::currency());
+            try {
+                $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+                $formatted = $formatter->formatCurrency($amount, static::currency());
 
-            if ($formatted !== false) {
-                return $formatted;
+                if ($formatted !== false) {
+                    return $formatted;
+                }
+            } catch (\Throwable) {
+                // Fallback when intl locale/currency is unavailable in production.
             }
         }
 

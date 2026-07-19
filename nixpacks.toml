@@ -8,4 +8,4 @@ cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
 cmds = ["npm ci", "npm run build"]
 
 [start]
-cmd = "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache database && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
