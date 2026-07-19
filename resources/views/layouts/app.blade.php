@@ -15,18 +15,22 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-[#fafaf5] font-sans text-slate-800 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100">
-    <div class="relative flex min-h-screen flex-col overflow-hidden">
+    <div class="relative flex min-h-screen overflow-hidden">
         <div aria-hidden="true" class="pointer-events-none absolute inset-0">
             <div class="absolute -left-20 top-10 size-72 rounded-full bg-palette-green/30 blur-3xl dark:bg-palette-green/15"></div>
             <div class="absolute -right-16 top-1/3 size-64 rounded-full bg-palette-yellow/40 blur-3xl dark:bg-palette-yellow/10"></div>
             <div class="absolute bottom-10 left-1/3 size-56 rounded-full bg-palette-orange/30 blur-3xl dark:bg-palette-orange/10"></div>
         </div>
 
-        <x-inaut-navbar />
+        <x-app-sidebar />
 
-        <main class="relative z-10 mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
-            @yield('content')
-        </main>
+        <div class="relative z-10 flex min-h-screen min-w-0 flex-1 flex-col">
+            @include('components.app-mobile-header')
+
+            <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+                @yield('content')
+            </main>
+        </div>
     </div>
 </body>
 </html>

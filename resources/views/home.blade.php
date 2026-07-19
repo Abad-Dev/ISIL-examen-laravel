@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', __('Dashboard') . ' — ' . config('app.name'))
+@section('mobile-title', __('Dashboard'))
 
 @section('content')
     <div class="mx-auto max-w-lg">
