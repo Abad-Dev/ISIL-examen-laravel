@@ -1,6 +1,9 @@
 @php
     $links = [
-        ['route' => 'home', 'label' => __('Dashboard'), 'icon' => 'heroicon-o-home'],
+        ['route' => 'home', 'pattern' => 'home', 'label' => __('Dashboard'), 'icon' => 'heroicon-o-home'],
+        ['route' => 'cuentas.index', 'pattern' => 'cuentas.*', 'label' => __('Accounts'), 'icon' => 'heroicon-o-wallet'],
+        ['route' => 'web.transacciones.index', 'pattern' => 'web.transacciones.*', 'label' => __('Transactions'), 'icon' => 'heroicon-o-arrows-right-left'],
+        ['route' => 'web.categorias.index', 'pattern' => 'web.categorias.*', 'label' => __('Categories'), 'icon' => 'heroicon-o-tag'],
     ];
 @endphp
 
@@ -40,7 +43,7 @@
         <ul class="space-y-1">
             @foreach ($links as $link)
                 @php
-                    $active = request()->routeIs($link['route']);
+                    $active = request()->routeIs($link['pattern']);
                 @endphp
                 <li>
                     <a
@@ -53,11 +56,7 @@
                         ])
                         @if ($active) aria-current="page" @endif
                     >
-                        @switch($link['icon'])
-                            @case('heroicon-o-home')
-                                <x-heroicon-o-home class="size-5 shrink-0" />
-                                @break
-                        @endswitch
+                        <x-dynamic-component :component="$link['icon']" class="size-5 shrink-0" />
                         <span>{{ $link['label'] }}</span>
                     </a>
                 </li>
