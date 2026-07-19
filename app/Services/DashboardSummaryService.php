@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Usuario;
 use App\Support\DateFormat;
+use App\Support\Money;
 use Illuminate\Support\Carbon;
 
 class DashboardSummaryService
@@ -86,7 +87,7 @@ class DashboardSummaryService
         return [
             'ingresos' => $ingresos ?: '0',
             'gastos' => $gastos ?: '0',
-            'neto' => \bcsub($ingresos ?: '0', $gastos ?: '0', 2),
+            'neto' => Money::sub($ingresos ?: '0', $gastos ?: '0'),
         ];
     }
 }

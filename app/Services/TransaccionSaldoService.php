@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Cuenta;
 use App\Models\Transaccion;
+use App\Support\Money;
 
 class TransaccionSaldoService
 {
@@ -49,14 +50,14 @@ class TransaccionSaldoService
     private function adjust(int $cuentaId, string $tipo, string $monto, int $direction): void
     {
         $cuenta = Cuenta::query()->lockForUpdate()->findOrFail($cuentaId);
-        $delta = $tipo === 'ingreso' ? $monto : \bcmul($monto, '-1', 2);
+        $delta = $tipo === 'ingreso' ? $monto : Money::mul($monto, '-1');
 
         if ($direction === -1) {
-            $delta = \bcmul($delta, '-1', 2);
+            $delta = Money::mul($delta, '-1');
         }
 
         $saldoActual = $cuenta->saldo ?? '0.00';
-        $cuenta->saldo = \bcadd($saldoActual, $delta, 2);
+        $cuenta->saldo = Money::add($saldoActual, $delta);
         $cuenta->save();
     }
 }

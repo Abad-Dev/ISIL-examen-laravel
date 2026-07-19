@@ -38,4 +38,54 @@ class Money
 
         return static::symbol().' '.number_format($amount, 2, '.', ',');
     }
+
+    public static function add(float|string|int|null $left, float|string|int|null $right, int $scale = 2): string
+    {
+        return static::calculate('add', $left, $right, $scale);
+    }
+
+    public static function sub(float|string|int|null $left, float|string|int|null $right, int $scale = 2): string
+    {
+        return static::calculate('sub', $left, $right, $scale);
+    }
+
+    public static function mul(float|string|int|null $left, float|string|int|null $right, int $scale = 2): string
+    {
+        return static::calculate('mul', $left, $right, $scale);
+    }
+
+    private static function calculate(string $operation, float|string|int|null $left, float|string|int|null $right, int $scale): string
+    {
+        $left = static::normalizeAmount($left, $scale);
+        $right = static::normalizeAmount($right, $scale);
+
+        if ($operation === 'add' && \function_exists('bcadd')) {
+            return \bcadd($left, $right, $scale);
+        }
+
+        if ($operation === 'sub' && \function_exists('bcsub')) {
+            return \bcsub($left, $right, $scale);
+        }
+
+        if ($operation === 'mul' && \function_exists('bcmul')) {
+            return \bcmul($left, $right, $scale);
+        }
+
+        $result = match ($operation) {
+            'add' => (float) $left + (float) $right,
+            'sub' => (float) $left - (float) $right,
+            'mul' => (float) $left * (float) $right,
+        };
+
+        return number_format($result, $scale, '.', '');
+    }
+
+    private static function normalizeAmount(float|string|int|null $amount, int $scale): string
+    {
+        if ($amount === null || $amount === '') {
+            return number_format(0, $scale, '.', '');
+        }
+
+        return number_format((float) $amount, $scale, '.', '');
+    }
 }
