@@ -9,9 +9,8 @@ function initCuentaModal() {
     const title = modal.querySelector('[data-cuenta-modal-title]');
     const iconInput = modal.querySelector('[data-cuenta-icon-input]');
     const colorInput = modal.querySelector('[data-cuenta-color-input]');
-    const submitLabelCreate = modal.querySelector('[data-cuenta-submit-label-create]');
-    const submitLabelEdit = modal.querySelector('[data-cuenta-submit-label-edit]');
-    const submitIconCreate = modal.querySelector('[data-cuenta-submit-icon-create]');
+    const submitCreate = modal.querySelector('[data-cuenta-submit-create]');
+    const submitEdit = modal.querySelector('[data-cuenta-submit-edit]');
     const storeUrl = form?.dataset.storeUrl || '';
     const createTitle = modal.dataset.createTitle || '';
     const editTitle = modal.dataset.editTitle || '';
@@ -103,9 +102,8 @@ function initCuentaModal() {
             setPickerSelection('color', color);
         }
 
-        submitLabelCreate?.classList.toggle('hidden', isEdit);
-        submitLabelEdit?.classList.toggle('hidden', !isEdit);
-        submitIconCreate?.classList.toggle('hidden', isEdit);
+        submitCreate?.classList.toggle('hidden', isEdit);
+        submitEdit?.classList.toggle('hidden', !isEdit);
     };
 
     const openModal = (mode = 'create', data = {}) => {

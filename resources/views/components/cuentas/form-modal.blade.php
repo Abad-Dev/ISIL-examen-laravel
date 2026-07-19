@@ -166,10 +166,23 @@
                 >
                     {{ __('Cancel') }}
                 </button>
-                <button type="submit" class="auth-btn-primary sm:w-auto sm:px-6" data-cuenta-submit>
-                    <x-heroicon-o-plus class="size-4 shrink-0" data-cuenta-submit-icon-create @class(['hidden' => $isEdit]) />
-                    <span data-cuenta-submit-label-create @class(['hidden' => $isEdit])>{{ __('Create account') }}</span>
-                    <span data-cuenta-submit-label-edit @class(['hidden' => ! $isEdit])>{{ __('Save changes') }}</span>
+                <button
+                    type="submit"
+                    class="auth-btn-primary gap-2 sm:w-auto sm:px-6"
+                    data-cuenta-submit-create
+                    @class(['hidden' => $isEdit])
+                >
+                    <x-heroicon-o-plus class="size-5 shrink-0" />
+                    {{ __('Create account') }}
+                </button>
+                <button
+                    type="submit"
+                    class="auth-btn-primary gap-2 sm:w-auto sm:px-6"
+                    data-cuenta-submit-edit
+                    @class(['hidden' => ! $isEdit])
+                >
+                    <x-heroicon-o-check class="size-5 shrink-0" />
+                    {{ __('Save changes') }}
                 </button>
             </div>
         </form>

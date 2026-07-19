@@ -220,11 +220,13 @@ resources/
     ├── components/
     │   ├── auth/             # card, input, alert
     │   ├── money.blade.php   # Montos en soles
-    │   └── confirm-modal.blade.php
+    │   ├── confirm-modal.blade.php
+    │   └── cuentas/form-modal.blade.php
     └── auth/                 # Vistas de autenticación
 
 resources/js/
 ├── confirm-modal.js          # Modal de confirmación reutilizable
+├── cuenta-modal.js           # Modal crear/editar cuenta
 
 lang/
 ├── es.json                   # Traducciones UI
@@ -244,7 +246,7 @@ Al crear pantallas nuevas (por ejemplo `/home` o CRUD de categorías):
 2. **Usar Instrument Sans** (ya global en `body`).
 3. **Traducir** con `__('Clave en inglés')` y añadir la entrada en `lang/es.json`.
 4. **Tono tú:** revisar que no aparezcan «usted», «su cuenta» en sentido formal, «ingrese», etc.
-5. **Iconos:** Heroicons outline (`heroicon-o-*`) en campos; solid (`heroicon-s-*`) en logo o énfasis.
+5. **Iconos:** Heroicons outline (`heroicon-o-*`) en campos y botones; solid (`heroicon-s-*`) en logo o énfasis. Ver sección 14.
 6. **Semántica de color:** verde = positivo/ingreso; rojo = negativo/error; naranja = enlaces/avisos; amarillo = acentos.
 7. **Compilar:** ejecutar `npm run build` tras cambios de estilos.
 8. **Montos:** usar `<x-money />` o `App\Support\Money::format()`; la app es solo soles (PEN). Ver sección 12.
@@ -391,4 +393,61 @@ Al pulsar enviar, se abre el modal. Solo si el usuario confirma se envía el for
 
 ---
 
-*Última actualización: documento alineado con identidad Inaut, paleta, auth unificada, internacionalización en español, moneda única PEN y modales de confirmación.*
+## 14. Botones primarios con Heroicons
+
+Los botones de acción principal (clase `.auth-btn-primary`) llevan **icono + texto** en la misma fila, igual en auth, modales y pantallas autenticadas.
+
+### Patrón
+
+```blade
+<button type="submit" class="auth-btn-primary gap-2 sm:w-auto sm:px-6">
+    <x-heroicon-o-plus class="size-5 shrink-0" />
+    {{ __('Create account') }}
+</button>
+```
+
+| Regla | Detalle |
+|-------|---------|
+| Clase base | `.auth-btn-primary` (definida en `app.css`) |
+| Icono | `<x-heroicon-o-*>` outline, coherente con el resto de la UI |
+| Tamaño | `size-5` (20px), nunca más grande en botones |
+| Layout | `shrink-0` en el icono para que no se estire en flex |
+| Espaciado | `gap-2` entre icono y texto |
+
+### Referencia por acción
+
+| Acción | Icono | Ejemplo en el proyecto |
+|--------|-------|-------------------------|
+| Crear / alta | `heroicon-o-plus` | «Nueva cuenta», «Crear cuenta» |
+| Guardar cambios | `heroicon-o-check` | Modal editar cuenta |
+| Registro | `heroicon-o-user-plus` | `/register` |
+| Iniciar sesión | `heroicon-o-arrow-right-on-rectangle` | `/login` |
+
+### Modales con crear y editar
+
+En formularios que comparten un modal (p. ej. cuentas), **no** intercambiar icono y etiqueta dentro de un solo botón con JavaScript. Eso provoca iconos mal dimensionados o superpuestos.
+
+**Decisión:** dos botones `type="submit"` en el mismo formulario, uno visible por modo:
+
+- `[data-cuenta-submit-create]` — visible al crear (`heroicon-o-plus` + «Crear cuenta»)
+- `[data-cuenta-submit-edit]` — visible al editar (`heroicon-o-check` + «Guardar cambios»)
+
+El script `cuenta-modal.js` alterna la clase `hidden` entre ambos al abrir el modal en modo crear o editar.
+
+### Qué evitar
+
+- Un solo botón con iconos distintos que se muestran/ocultan por separado del texto.
+- Iconos sin `size-5` ni `shrink-0` (p. ej. `size-4` suelto o SVG a tamaño por defecto).
+- Mezclar estilos de botón distintos a `.auth-btn-primary` para acciones principales en modales.
+
+### Dónde aplica
+
+- Pantallas auth (`login`, `register`, restablecer contraseña).
+- Botón «Nueva cuenta» en `/cuentas`.
+- Pie del modal `components/cuentas/form-modal.blade.php`.
+
+Al añadir CRUD en modales (categorías, transacciones), reutilizar este patrón.
+
+---
+
+*Última actualización: documento alineado con identidad Inaut, paleta, auth unificada, internacionalización en español, moneda única PEN, modales de confirmación y botones primarios con Heroicons.*
