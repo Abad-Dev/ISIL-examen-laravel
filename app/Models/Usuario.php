@@ -43,6 +43,11 @@ class Usuario extends Authenticatable
         return $this->nombre;
     }
 
+    public function cuentas()
+    {
+        return $this->hasMany(Cuenta::class, 'usuario_id');
+    }
+
     public function categorias()
     {
         return $this->hasMany(Categoria::class, 'usuario_id');
