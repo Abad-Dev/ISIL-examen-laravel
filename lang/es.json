@@ -107,5 +107,17 @@
     "Quick transaction": "Registro rápido",
     "Record a movement in seconds.": "Registra un movimiento en segundos.",
     "Register expense": "Registrar gasto",
-    "Register income": "Registrar ingreso"
+    "Register income": "Registrar ingreso",
+    "Today": "Hoy",
+    "Your accounts and today's activity": "Tus cuentas y la actividad de hoy",
+    "Total balance": "Balance total",
+    "Income today": "Ingresos hoy",
+    "Expenses today": "Gastos hoy",
+    "Net today": "Balance neto hoy",
+    "This week": "Esta semana",
+    "Monday to Sunday": "De lunes a domingo",
+    "This month": "Este mes",
+    "Income": "Ingresos",
+    "Expenses": "Gastos",
+    "Net balance": "Balance neto"
 }

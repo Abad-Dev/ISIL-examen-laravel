@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DashboardSummaryService;
+
 class HomeController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private DashboardSummaryService $dashboardSummary
+    ) {
         $this->middleware('auth');
     }
 
@@ -16,6 +19,7 @@ class HomeController extends Controller
         return view('home', [
             'cuentas' => $usuario->cuentas()->orderBy('nombre')->get(),
             'categorias' => $usuario->categorias()->orderBy('tipo')->orderBy('nombre')->get(),
+            'summary' => $this->dashboardSummary->forUser($usuario),
         ]);
     }
 }

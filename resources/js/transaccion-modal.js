@@ -1,3 +1,11 @@
+function localDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 function initTransaccionModal() {
     const modal = document.querySelector('[data-transaccion-modal]');
 
@@ -94,7 +102,7 @@ function initTransaccionModal() {
         }
 
         if (fechaField) {
-            fechaField.value = isEdit ? data.fecha ?? '' : new Date().toISOString().slice(0, 10);
+            fechaField.value = isEdit ? data.fecha ?? '' : localDateString();
         }
 
         if (descripcionField) {

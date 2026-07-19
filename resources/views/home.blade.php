@@ -4,7 +4,7 @@
 @section('mobile-title', __('Dashboard'))
 
 @section('content')
-    <div class="mx-auto max-w-2xl space-y-6">
+    <div class="mx-auto max-w-5xl space-y-6">
         @if (session('status'))
             <x-auth.alert type="success">
                 {{ session('status') }}
@@ -21,6 +21,31 @@
             </x-auth.card>
         @else
             <x-dashboard.quick-transaction :cuentas="$cuentas" :categorias="$categorias" />
+
+            <div class="grid gap-4 lg:grid-cols-3">
+                <x-dashboard.today-summary
+                    :total-balance="$summary['totalBalance']"
+                    :ingresos="$summary['today']['ingresos']"
+                    :gastos="$summary['today']['gastos']"
+                    :neto="$summary['today']['neto']"
+                />
+
+                <x-dashboard.period-summary
+                    :title="__('This week')"
+                    :subtitle="__('Monday to Sunday')"
+                    :ingresos="$summary['week']['ingresos']"
+                    :gastos="$summary['week']['gastos']"
+                    :neto="$summary['week']['neto']"
+                />
+
+                <x-dashboard.period-summary
+                    :title="__('This month')"
+                    :subtitle="now()->translatedFormat('F Y')"
+                    :ingresos="$summary['month']['ingresos']"
+                    :gastos="$summary['month']['gastos']"
+                    :neto="$summary['month']['neto']"
+                />
+            </div>
         @endif
     </div>
 @endsection

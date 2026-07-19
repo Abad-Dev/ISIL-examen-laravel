@@ -73,21 +73,24 @@
             </div>
 
             <div class="shrink-0 sm:pt-7">
-                <label for="quick-monto" class="sr-only">{{ __('Amount in soles') }}</label>
+                <label for="quick-monto-display" class="sr-only">{{ __('Amount in soles') }}</label>
                 <div class="flex items-baseline justify-end gap-1">
                     <span class="text-lg font-medium text-slate-400">S/</span>
                     <input
-                        id="quick-monto"
-                        type="number"
+                        type="hidden"
                         name="monto"
-                        step="0.01"
-                        min="0.01"
-                        inputmode="decimal"
-                        placeholder="0.00"
                         value="{{ old('monto') }}"
-                        required
-                        class="w-full min-w-[8rem] max-w-[10rem] border-0 bg-transparent p-0 text-right text-4xl font-semibold tabular-nums text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-0 dark:text-white dark:placeholder:text-slate-600 sm:text-5xl @error('monto') text-palette-red @enderror"
-                        data-quick-transaction-field="monto"
+                        data-quick-transaction-monto-value
+                    />
+                    <input
+                        id="quick-monto-display"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="0.00"
+                        value="0.00"
+                        class="w-full min-w-[8rem] max-w-[11rem] border-0 bg-transparent p-0 text-right text-4xl font-semibold tabular-nums text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-0 dark:text-white dark:placeholder:text-slate-600 sm:text-5xl @error('monto') text-palette-red @enderror"
+                        data-quick-transaction-monto-display
                     />
                 </div>
                 @error('monto')

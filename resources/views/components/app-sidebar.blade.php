@@ -16,7 +16,7 @@
 
 <aside
     id="app-sidebar"
-    class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-slate-200/80 bg-white/95 shadow-xl backdrop-blur-md transition-transform duration-200 ease-in-out dark:border-slate-800 dark:bg-slate-950/95 lg:static lg:z-auto lg:w-64 lg:translate-x-0 lg:shadow-none"
+    class="fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-72 -translate-x-full flex-col border-r border-slate-200/80 bg-white/95 shadow-xl backdrop-blur-md transition-transform duration-200 ease-in-out dark:border-slate-800 dark:bg-slate-950/95 lg:static lg:z-auto lg:h-dvh lg:w-64 lg:translate-x-0 lg:shadow-none"
 >
     <div class="flex items-center justify-between gap-3 border-b border-slate-200/80 px-4 py-4 dark:border-slate-800">
         <a href="{{ route('home') }}" class="flex min-w-0 flex-1 items-center gap-3 transition hover:opacity-90">
