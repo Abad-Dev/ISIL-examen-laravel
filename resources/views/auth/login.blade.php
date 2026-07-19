@@ -28,12 +28,12 @@
             />
 
             <div class="flex items-center justify-between gap-4">
-                <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                     <input
                         type="checkbox"
                         name="remember"
                         id="remember"
-                        class="size-4 rounded border-slate-300 text-palette-green focus:ring-palette-green/40"
+                        class="size-4 rounded border-slate-300 text-palette-green focus:ring-palette-green/40 dark:border-slate-600 dark:bg-slate-900"
                         {{ old('remember') ? 'checked' : '' }}
                     >
                     <span>{{ __('Remember Me') }}</span>

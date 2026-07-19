@@ -19,10 +19,11 @@ export function resolveDark(theme) {
 export function applyTheme(theme) {
     document.documentElement.classList.toggle('dark', resolveDark(theme));
     localStorage.setItem(STORAGE_KEY, theme);
+}
 
-    document.querySelectorAll('[data-theme-selector]').forEach((select) => {
-        select.value = theme;
-    });
+export function toggleTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
 }
 
 export function initTheme() {
@@ -34,15 +35,22 @@ export function initTheme() {
         }
     });
 
-    document.querySelectorAll('[data-theme-selector]').forEach((select) => {
-        select.value = getTheme();
-        select.addEventListener('change', (event) => {
-            applyTheme(event.target.value);
-        });
+    window.addEventListener('storage', (event) => {
+        if (event.key === STORAGE_KEY) {
+            applyTheme(getTheme());
+        }
+    });
+
+    document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+        if (button.dataset.themeBound === 'true') {
+            return;
+        }
+
+        button.dataset.themeBound = 'true';
+        button.addEventListener('click', toggleTheme);
     });
 }
 
-// Apply before paint when imported on pages that load JS at end of body.
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTheme);
 } else {

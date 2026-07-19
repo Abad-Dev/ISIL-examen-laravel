@@ -4,9 +4,9 @@
 
 @php
     $styles = match ($type) {
-        'success' => 'border-palette-green/50 bg-palette-green/20 text-slate-700',
-        'error' => 'border-palette-red/50 bg-palette-red/15 text-slate-800',
-        default => 'border-slate-200 bg-white text-slate-700',
+        'success' => 'border-palette-green/50 bg-palette-green/20 text-slate-700 dark:text-slate-200',
+        'error' => 'border-palette-red/50 bg-palette-red/15 text-slate-800 dark:text-slate-200',
+        default => 'border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200',
     };
 @endphp
 

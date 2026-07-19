@@ -6,13 +6,7 @@
 
     <title>{{ config('app.name', 'Inaut') }}</title>
 
-    <script>
-        (function () {
-            var theme = localStorage.getItem('inaut-theme') || 'system';
-            var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            if (dark) document.documentElement.classList.add('dark');
-        })();
-    </script>
+    @include('partials.theme-script')
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
@@ -27,38 +21,7 @@
             <div class="absolute bottom-10 left-1/3 size-56 rounded-full bg-palette-orange/30 blur-3xl dark:bg-palette-orange/10"></div>
         </div>
 
-        <header class="relative z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
-            <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-                <a href="{{ url('/') }}" class="flex items-center gap-3 transition hover:opacity-90">
-                    <span class="flex size-10 items-center justify-center rounded-xl bg-palette-green shadow-md shadow-palette-green/40 ring-4 ring-white dark:ring-slate-900">
-                        <x-heroicon-s-banknotes class="size-5 text-slate-800" />
-                    </span>
-                    <span class="text-lg font-semibold tracking-tight">{{ config('app.name', 'Inaut') }}</span>
-                </a>
-
-                <div class="flex items-center gap-3 sm:gap-4">
-                    <label for="theme-selector" class="sr-only">{{ __('Theme') }}</label>
-                    <select id="theme-selector" data-theme-selector class="theme-selector">
-                        <option value="light">{{ __('Light mode') }}</option>
-                        <option value="dark">{{ __('Dark mode') }}</option>
-                        <option value="system">{{ __('System theme') }}</option>
-                    </select>
-
-                    @auth
-                        <a href="{{ url('/home') }}" class="hidden rounded-xl bg-palette-green px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:brightness-95 sm:inline-flex">
-                            {{ __('Go to dashboard') }}
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="hidden text-sm font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white sm:inline">
-                            {{ __('Sign in') }}
-                        </a>
-                        <a href="{{ route('register') }}" class="hidden rounded-xl bg-palette-green px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:brightness-95 sm:inline-flex">
-                            {{ __('Register') }}
-                        </a>
-                    @endauth
-                </div>
-            </nav>
-        </header>
+        <x-inaut-navbar />
 
         <main class="relative z-10 flex flex-1 items-center justify-center px-4 py-12 sm:px-6">
             <div class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/60 ring-1 ring-slate-100 dark:bg-slate-900 dark:shadow-black/30 dark:ring-slate-800">

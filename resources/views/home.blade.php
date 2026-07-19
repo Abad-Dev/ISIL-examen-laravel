@@ -1,23 +1,17 @@
 @extends('layouts.app')
 
+@section('title', __('Dashboard') . ' — ' . config('app.name'))
+
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+    <div class="mx-auto max-w-lg">
+        <x-auth.card :title="__('Dashboard')">
+            @if (session('status'))
+                <x-auth.alert type="success" class="mb-5">
+                    {{ session('status') }}
+                </x-auth.alert>
+            @endif
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
-        </div>
+            <p class="text-slate-600 dark:text-slate-300">{{ __('You are logged in!') }}</p>
+        </x-auth.card>
     </div>
-</div>
 @endsection
