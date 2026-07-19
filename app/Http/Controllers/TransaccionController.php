@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FilterTransaccionRequest;
 use App\Http\Requests\StoreTransaccionRequest;
 use App\Http\Requests\UpdateTransaccionRequest;
 use App\Models\Transaccion;
@@ -18,18 +19,24 @@ class TransaccionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(): View
+    public function index(FilterTransaccionRequest $request): View
     {
         $usuario = auth()->user();
+        $filters = $request->validated();
+
+        $transacciones = $usuario->transacciones()
+            ->with(['cuenta', 'categoria'])
+            ->filter($filters)
+            ->orderByDesc('fecha')
+            ->orderByDesc('id')
+            ->get();
 
         return view('transacciones.index', [
-            'transacciones' => $usuario->transacciones()
-                ->with(['cuenta', 'categoria'])
-                ->orderByDesc('fecha')
-                ->orderByDesc('id')
-                ->get(),
+            'transacciones' => $transacciones,
             'cuentas' => $usuario->cuentas()->orderBy('nombre')->get(),
             'categorias' => $usuario->categorias()->orderBy('tipo')->orderBy('nombre')->get(),
+            'filters' => $filters,
+            'filtersActive' => $request->hasActiveFilters(),
         ]);
     }
 
@@ -56,7 +63,15 @@ class TransaccionController extends Controller
         });
 
         return redirect()
-            ->route('web.transacciones.index')
+            ->route('web.transacciones.index', request()->only([
+                'fecha_desde',
+                'fecha_hasta',
+                'cuenta_id',
+                'categoria_id',
+                'tipo',
+                'monto_min',
+                'monto_max',
+            ]))
             ->with('status', __('Transaction updated successfully.'));
     }
 
@@ -70,7 +85,15 @@ class TransaccionController extends Controller
         });
 
         return redirect()
-            ->route('web.transacciones.index')
+            ->route('web.transacciones.index', request()->only([
+                'fecha_desde',
+                'fecha_hasta',
+                'cuenta_id',
+                'categoria_id',
+                'tipo',
+                'monto_min',
+                'monto_max',
+            ]))
             ->with('status', __('Transaction deleted successfully.'));
     }
 

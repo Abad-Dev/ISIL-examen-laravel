@@ -119,5 +119,16 @@
     "This month": "Este mes",
     "Income": "Ingresos",
     "Expenses": "Gastos",
-    "Net balance": "Balance neto"
+    "Net balance": "Balance neto",
+    "Filters": "Filtros",
+    "Clear filters": "Limpiar filtros",
+    "Date from": "Fecha desde",
+    "Date to": "Fecha hasta",
+    "All accounts": "Todas las cuentas",
+    "All categories": "Todas las categorías",
+    "Min amount": "Monto mínimo",
+    "Max amount": "Monto máximo",
+    "Apply filters": "Aplicar filtros",
+    "No transactions match your filters.": "Ninguna transacción coincide con tus filtros.",
+    "All types": "Todos los tipos"
 }
