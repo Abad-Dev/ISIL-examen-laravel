@@ -41,5 +41,20 @@
     "Review your income and expenses and see which account each movement belongs to.": "Revisa tus ingresos y gastos y ve desde qué cuenta proviene cada movimiento.",
     "Categories": "Categorías",
     "What did I spend on or where did income come from?": "¿En qué gasté o de dónde vino el ingreso?",
-    "Organize your movements by type to understand how you use your money.": "Organiza tus movimientos por tipo para entender cómo usas tu dinero."
+    "Organize your movements by type to understand how you use your money.": "Organiza tus movimientos por tipo para entender cómo usas tu dinero.",
+    "New account": "Nueva cuenta",
+    "Create account": "Crear cuenta",
+    "Account created successfully.": "Cuenta creada correctamente.",
+    "You have no accounts yet. Create your first one.": "Aún no tienes cuentas. Crea la primera.",
+    "Type": "Tipo",
+    "Balance": "Saldo",
+    "Optional": "Opcional",
+    "Icon": "Icono",
+    "Color": "Color",
+    "Cancel": "Cancelar",
+    "Close": "Cerrar",
+    "account_type.efectivo": "Efectivo",
+    "account_type.billetera_digital": "Billetera digital",
+    "account_type.banco": "Banco",
+    "account_type.otro": "Otro"
 }
