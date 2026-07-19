@@ -106,16 +106,15 @@
 
                 <div class="space-y-1.5">
                     <label for="transaccion-categoria" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        {{ __('Category') }}
+                        {{ __('Category') }} <span class="font-normal text-slate-400">({{ __('Optional') }})</span>
                     </label>
                     <select
                         id="transaccion-categoria"
                         name="categoria_id"
                         class="auth-input @error('categoria_id') auth-input-error @enderror"
-                        required
                         data-transaccion-field="categoria_id"
                     >
-                        <option value="">{{ __('Select a category') }}</option>
+                        <option value="">{{ __('No category') }}</option>
                         @foreach ($categorias as $categoria)
                             <option
                                 value="{{ $categoria->id }}"

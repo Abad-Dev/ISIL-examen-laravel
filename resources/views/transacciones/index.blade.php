@@ -8,7 +8,7 @@
         <x-auth.card :title="__('Transactions')" :subtitle="__('What movements did I make and from which account?')">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p class="text-slate-600 dark:text-slate-300">{{ __('Review your income and expenses and see which account each movement belongs to.') }}</p>
-                @if ($cuentas->isNotEmpty() && $categorias->isNotEmpty())
+                @if ($cuentas->isNotEmpty())
                     <button
                         type="button"
                         class="auth-btn-primary shrink-0 sm:w-auto sm:px-5"
@@ -38,12 +38,6 @@
                 <x-heroicon-o-wallet class="mx-auto size-12 text-slate-300 dark:text-slate-600" />
                 <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">{{ __('You need at least one account before recording transactions.') }}</p>
                 <a href="{{ route('cuentas.index') }}" class="auth-link mt-3 inline-block text-sm">{{ __('Go to accounts') }}</a>
-            </div>
-        @elseif ($categorias->isEmpty())
-            <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/40">
-                <x-heroicon-o-tag class="mx-auto size-12 text-slate-300 dark:text-slate-600" />
-                <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">{{ __('You need at least one category before recording transactions.') }}</p>
-                <a href="{{ route('web.categorias.index') }}" class="auth-link mt-3 inline-block text-sm">{{ __('Go to categories') }}</a>
             </div>
         @elseif ($transacciones->isEmpty())
             <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/40">
@@ -81,10 +75,12 @@
 
                                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                         {{ $transaccion->cuenta->nombre }}
-                                        ·
-                                        {{ $transaccion->categoria->nombre }}
-                                        ·
-                                        {{ $transaccion->fecha->translatedFormat('d M Y') }}
+                                        @if ($transaccion->categoria)
+                                            · {{ $transaccion->categoria->nombre }}
+                                        @else
+                                            · {{ __('No category') }}
+                                        @endif
+                                        · {{ $transaccion->fecha->translatedFormat('d M Y') }}
                                     </p>
                                 </div>
                             </div>
@@ -143,7 +139,7 @@
         @endif
     </div>
 
-    @if ($cuentas->isNotEmpty() && $categorias->isNotEmpty())
+    @if ($cuentas->isNotEmpty())
         <x-transacciones.form-modal
             :cuentas="$cuentas"
             :categorias="$categorias"

@@ -17,6 +17,10 @@ class UpdateTransaccionRequest extends FormRequest
         $this->merge([
             '_transaccion_id' => $this->route('transaccion')?->id,
         ]);
+
+        if ($this->filled('categoria_id') === false) {
+            $this->merge(['categoria_id' => null]);
+        }
     }
 
     public function rules(): array
@@ -27,7 +31,7 @@ class UpdateTransaccionRequest extends FormRequest
                 Rule::exists('cuentas', 'id')->where('usuario_id', auth()->id()),
             ],
             'categoria_id' => [
-                'required',
+                'nullable',
                 Rule::exists('categorias', 'id')->where(function ($query) {
                     return $query
                         ->where('usuario_id', auth()->id())
