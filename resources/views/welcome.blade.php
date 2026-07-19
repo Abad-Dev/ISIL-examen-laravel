@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
 
-    <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="bg-light">
@@ -19,13 +18,13 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center p-5">
                         <h1 class="mb-3">{{ config('app.name', 'Inaut') }}</h1>
-                        <p class="text-muted mb-4">Organiza tus ingresos, gastos y presupuestos en un solo lugar.</p>
+                        <p class="text-muted mb-4">{{ __('Organize your income, expenses and budgets in one place.') }}</p>
 
                         @auth
-                            <a href="{{ url('/home') }}" class="btn btn-primary">Ir al panel</a>
+                            <a href="{{ url('/home') }}" class="btn btn-primary">{{ __('Go to dashboard') }}</a>
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-primary me-2">Iniciar sesión</a>
-                            <a href="{{ route('register') }}" class="btn btn-outline-primary">Registrarse</a>
+                            <a href="{{ route('login') }}" class="btn btn-primary me-2">{{ __('Sign in') }}</a>
+                            <a href="{{ route('register') }}" class="btn btn-outline-primary">{{ __('Register') }}</a>
                         @endauth
                     </div>
                 </div>
