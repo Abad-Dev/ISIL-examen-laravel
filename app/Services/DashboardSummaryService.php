@@ -86,7 +86,7 @@ class DashboardSummaryService
         return [
             'ingresos' => $ingresos ?: '0',
             'gastos' => $gastos ?: '0',
-            'neto' => bcsub($ingresos ?: '0', $gastos ?: '0', 2),
+            'neto' => \bcsub($ingresos ?: '0', $gastos ?: '0', 2),
         ];
     }
 }

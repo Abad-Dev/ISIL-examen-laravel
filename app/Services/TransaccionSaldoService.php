@@ -49,14 +49,14 @@ class TransaccionSaldoService
     private function adjust(int $cuentaId, string $tipo, string $monto, int $direction): void
     {
         $cuenta = Cuenta::query()->lockForUpdate()->findOrFail($cuentaId);
-        $delta = $tipo === 'ingreso' ? $monto : bcmul($monto, '-1', 2);
+        $delta = $tipo === 'ingreso' ? $monto : \bcmul($monto, '-1', 2);
 
         if ($direction === -1) {
-            $delta = bcmul($delta, '-1', 2);
+            $delta = \bcmul($delta, '-1', 2);
         }
 
         $saldoActual = $cuenta->saldo ?? '0.00';
-        $cuenta->saldo = bcadd($saldoActual, $delta, 2);
+        $cuenta->saldo = \bcadd($saldoActual, $delta, 2);
         $cuenta->save();
     }
 }
