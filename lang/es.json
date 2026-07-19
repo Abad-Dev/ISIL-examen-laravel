@@ -58,5 +58,14 @@
     "account_type.banco": "Banco",
     "account_type.otro": "Otro",
     "Balance in soles": "Saldo en soles",
-    "All amounts in the app are in Peruvian soles (PEN).": "Todos los montos de la app están en soles peruanos (PEN)."
+    "All amounts in the app are in Peruvian soles (PEN).": "Todos los montos de la app están en soles peruanos (PEN).",
+    "Edit": "Editar",
+    "Delete": "Eliminar",
+    "Edit account": "Editar cuenta",
+    "Save changes": "Guardar cambios",
+    "Account updated successfully.": "Cuenta actualizada correctamente.",
+    "Account deleted successfully.": "Cuenta eliminada correctamente.",
+    "Are you sure you want to delete this account?": "¿Seguro que quieres eliminar esta cuenta?",
+    "Confirm": "Confirmar",
+    "Delete account": "Eliminar cuenta"
 }

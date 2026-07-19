@@ -2,17 +2,23 @@
     'icons',
     'colors',
     'open' => false,
+    'editCuentaId' => null,
 ])
 
 @php
+    $isEdit = $editCuentaId !== null;
     $selectedIcon = old('icon', $icons[0]);
     $selectedColor = old('color_hex', $colors[0]);
+    $formAction = $isEdit ? route('cuentas.update', $editCuentaId) : route('cuentas.store');
 @endphp
 
 <div
     id="cuenta-modal"
     class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center {{ $open ? '' : 'hidden' }}"
     data-cuenta-modal
+    data-cuenta-modal-mode="{{ $isEdit ? 'edit' : 'create' }}"
+    data-create-title="{{ __('New account') }}"
+    data-edit-title="{{ __('Edit account') }}"
     role="dialog"
     aria-modal="true"
     aria-labelledby="cuenta-modal-title"
@@ -28,8 +34,8 @@
         </div>
 
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-            <h2 id="cuenta-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white">
-                {{ __('New account') }}
+            <h2 id="cuenta-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white" data-cuenta-modal-title>
+                {{ $isEdit ? __('Edit account') : __('New account') }}
             </h2>
             <button
                 type="button"
@@ -41,8 +47,17 @@
             </button>
         </div>
 
-        <form method="POST" action="{{ route('cuentas.store') }}" class="overflow-y-auto px-6 py-5">
+        <form
+            method="POST"
+            action="{{ $formAction }}"
+            class="overflow-y-auto px-6 py-5"
+            data-cuenta-form
+            data-store-url="{{ route('cuentas.store') }}"
+        >
             @csrf
+            @if ($isEdit)
+                @method('PUT')
+            @endif
 
             <div class="space-y-5">
                 <x-auth.input
@@ -52,17 +67,19 @@
                     value="{{ old('nombre') }}"
                     required
                     autofocus
+                    data-cuenta-field="nombre"
                 />
 
                 <div class="space-y-1.5">
-                    <label for="tipo" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <label for="cuenta-tipo" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         {{ __('Type') }}
                     </label>
                     <select
-                        id="tipo"
+                        id="cuenta-tipo"
                         name="tipo"
                         class="auth-input @error('tipo') auth-input-error @enderror"
                         required
+                        data-cuenta-field="tipo"
                     >
                         @foreach (['efectivo', 'billetera_digital', 'banco', 'otro'] as $tipo)
                             <option value="{{ $tipo }}" @selected(old('tipo', 'efectivo') === $tipo)>
@@ -85,6 +102,7 @@
                     value="{{ old('saldo') }}"
                     placeholder="0.00"
                     required
+                    data-cuenta-field="saldo"
                 />
                 <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
 
@@ -148,9 +166,10 @@
                 >
                     {{ __('Cancel') }}
                 </button>
-                <button type="submit" class="auth-btn-primary sm:w-auto sm:px-6">
-                    <x-heroicon-o-plus class="size-5" />
-                    {{ __('Create account') }}
+                <button type="submit" class="auth-btn-primary sm:w-auto sm:px-6" data-cuenta-submit>
+                    <x-heroicon-o-plus class="size-4 shrink-0" data-cuenta-submit-icon-create @class(['hidden' => $isEdit]) />
+                    <span data-cuenta-submit-label-create @class(['hidden' => $isEdit])>{{ __('Create account') }}</span>
+                    <span data-cuenta-submit-label-edit @class(['hidden' => ! $isEdit])>{{ __('Save changes') }}</span>
                 </button>
             </div>
         </form>

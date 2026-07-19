@@ -219,8 +219,12 @@ resources/
     │   └── app.blade.php     # Layout app (Bootstrap + Tailwind)
     ├── components/
     │   ├── auth/             # card, input, alert
-    │   └── money.blade.php   # Montos en soles
+    │   ├── money.blade.php   # Montos en soles
+    │   └── confirm-modal.blade.php
     └── auth/                 # Vistas de autenticación
+
+resources/js/
+├── confirm-modal.js          # Modal de confirmación reutilizable
 
 lang/
 ├── es.json                   # Traducciones UI
@@ -244,6 +248,7 @@ Al crear pantallas nuevas (por ejemplo `/home` o CRUD de categorías):
 6. **Semántica de color:** verde = positivo/ingreso; rojo = negativo/error; naranja = enlaces/avisos; amarillo = acentos.
 7. **Compilar:** ejecutar `npm run build` tras cambios de estilos.
 8. **Montos:** usar `<x-money />` o `App\Support\Money::format()`; la app es solo soles (PEN). Ver sección 12.
+9. **Confirmaciones:** usar `<x-confirm-modal />` y `data-confirm-submit`; no usar `window.confirm()` ni `window.alert()`. Ver sección 13.
 
 ### Plantilla de layout sugerida para nuevas secciones autenticadas
 
@@ -322,4 +327,68 @@ Money::format(1234.5); // "S/ 1,234.50" (según locale es_PE)
 
 ---
 
-*Última actualización: documento alineado con identidad Inaut, paleta, auth unificada, internacionalización en español y moneda única PEN.*
+## 13. Modales de confirmación
+
+Inaut **no usa diálogos nativos del navegador** (`window.confirm()`, `window.alert()`, `window.prompt()`). Las acciones destructivas o irreversibles se confirman con un modal propio de la interfaz.
+
+### Por qué
+
+- Coherencia visual con Tailwind, paleta Inaut y dark mode.
+- Textos traducibles vía `lang/es.json`.
+- Mejor experiencia en mobile que los cuadros del sistema operativo.
+
+### Componentes
+
+| Pieza | Archivo | Rol |
+|-------|---------|-----|
+| Modal | `resources/views/components/confirm-modal.blade.php` | UI de confirmación (título, mensaje, cancelar, confirmar) |
+| Script | `resources/js/confirm-modal.js` | Apertura/cierre y enlace con formularios |
+| Layout | `layouts/app.blade.php` | Incluye `<x-confirm-modal />` en vistas autenticadas |
+
+El script se carga desde `resources/js/app.js` en el layout autenticado.
+
+### Uso en formularios
+
+Añadir atributos `data-confirm-*` al `<form>` que ejecuta la acción:
+
+```blade
+<form
+    method="POST"
+    action="{{ route('cuentas.destroy', $cuenta) }}"
+    data-confirm-submit
+    data-confirm-title="{{ __('Delete account') }}"
+    data-confirm-message="{{ __('Are you sure you want to delete this account?') }}"
+    data-confirm-label="{{ __('Delete') }}"
+    data-confirm-variant="danger"
+>
+    @csrf
+    @method('DELETE')
+    <button type="submit">{{ __('Delete') }}</button>
+</form>
+```
+
+| Atributo | Obligatorio | Descripción |
+|----------|-------------|-------------|
+| `data-confirm-submit` | Sí | Activa la interceptación del envío |
+| `data-confirm-title` | Sí | Título del modal |
+| `data-confirm-message` | Sí | Cuerpo del mensaje |
+| `data-confirm-label` | No | Texto del botón confirmar (default: «Confirmar») |
+| `data-confirm-variant` | No | `danger` (rojo, default) o `primary` (verde) |
+
+Al pulsar enviar, se abre el modal. Solo si el usuario confirma se envía el formulario.
+
+### Mensajes informativos vs confirmación
+
+- **`x-auth.alert`:** mensajes de éxito o error tras una acción (flash de sesión). No es un `alert()` del navegador.
+- **`<x-confirm-modal />`:** preguntar antes de ejecutar una acción.
+
+### Reglas
+
+1. No introducir `window.confirm()` ni `window.alert()` en JS del proyecto.
+2. Traducir título, mensaje y etiquetas del botón con `__()`.
+3. Acciones destructivas (eliminar) usan `data-confirm-variant="danger"`.
+4. Cerrar con **Cancelar**, clic en el fondo o tecla **Escape** equivale a rechazar.
+
+---
+
+*Última actualización: documento alineado con identidad Inaut, paleta, auth unificada, internacionalización en español, moneda única PEN y modales de confirmación.*
