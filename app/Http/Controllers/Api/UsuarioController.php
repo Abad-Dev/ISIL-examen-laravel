@@ -8,14 +8,24 @@ use Illuminate\Http\Request;
 
 class UsuarioController extends Controller
 {
-    public function index()
+    public function show()
     {
-        return Usuario::all();
+        return auth()->user();
     }
 
-    public function store(Request $request)
+    public function update(Request $request)
     {
-        $usuario = Usuario::create($request->all());
-        return response()->json($usuario, 201);
+        $usuario = auth()->user();
+
+        $validated = $request->validate([
+            'nombre' => ['sometimes', 'string', 'max:100'],
+            'email' => ['sometimes', 'string', 'email', 'max:150', 'unique:usuarios,email,'.$usuario->id],
+            'moneda' => ['sometimes', 'string', 'size:3'],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $usuario->update($validated);
+
+        return response()->json($usuario);
     }
 }

@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
+
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
 
     protected $table = 'usuarios';
 
@@ -20,7 +28,20 @@ class Usuario extends Model
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->nombre;
+    }
 
     public function categorias()
     {
@@ -37,27 +58,23 @@ class Usuario extends Model
         return $this->hasMany(Presupuesto::class, 'usuario_id');
     }
 
-    // hasOne: de todas las transacciones del usuario, solo la más reciente por fecha.
     public function ultimaTransaccion()
     {
         return $this->hasOne(Transaccion::class, 'usuario_id')->latestOfMany('fecha');
     }
 
-    // hasManyThrough: las transacciones del usuario accedidas A TRAVÉS de sus categorias
-    // (usuarios -> categorias.usuario_id -> transacciones.categoria_id).
     public function transaccionesPorCategoria()
     {
         return $this->hasManyThrough(
             Transaccion::class,
             Categoria::class,
-            'usuario_id',   // FK en categorias que apunta a usuarios
-            'categoria_id', // FK en transacciones que apunta a categorias
-            'id',           // PK local en usuarios
-            'id'            // PK local en categorias
+            'usuario_id',
+            'categoria_id',
+            'id',
+            'id'
         );
     }
 
-    // hasManyThrough: los presupuestos del usuario a través de sus categorias.
     public function presupuestosPorCategoria()
     {
         return $this->hasManyThrough(
