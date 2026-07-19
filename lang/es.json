@@ -103,5 +103,9 @@
     "transaction_type.ingreso": "Ingreso",
     "transaction_type.gasto": "Gasto",
     "Cannot delete account with transactions.": "No puedes eliminar una cuenta que tiene transacciones.",
-    "No category": "Sin categoría"
+    "No category": "Sin categoría",
+    "Quick transaction": "Registro rápido",
+    "Record a movement in seconds.": "Registra un movimiento en segundos.",
+    "Register expense": "Registrar gasto",
+    "Register income": "Registrar ingreso"
 }

@@ -41,7 +41,7 @@ class TransaccionController extends Controller
         });
 
         return redirect()
-            ->route('web.transacciones.index')
+            ->back()
             ->with('status', __('Transaction created successfully.'));
     }
 

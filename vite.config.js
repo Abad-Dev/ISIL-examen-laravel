@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/cuenta-modal.js',
                 'resources/js/categoria-modal.js',
                 'resources/js/transaccion-modal.js',
+                'resources/js/quick-transaction.js',
             ],
             refresh: true,
         }),
