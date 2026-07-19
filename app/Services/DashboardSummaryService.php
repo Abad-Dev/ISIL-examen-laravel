@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Usuario;
+use App\Support\DateFormat;
 use Illuminate\Support\Carbon;
 
 class DashboardSummaryService
@@ -59,7 +60,7 @@ class DashboardSummaryService
         return [
             'mes' => $month->month,
             'anio' => $month->year,
-            'label' => $month->copy()->startOfMonth()->translatedFormat('F Y'),
+            'label' => DateFormat::monthYear($month->copy()->startOfMonth()),
             'categories' => $categories,
             'total' => round(array_sum(array_column($categories, 'total')), 2),
         ];
@@ -70,17 +71,17 @@ class DashboardSummaryService
         $fromDate = $from->toDateString();
         $toExclusive = $to->copy()->addDay()->toDateString();
 
-        $ingresos = (string) $usuario->transacciones()
+        $ingresos = (string) ($usuario->transacciones()
             ->where('tipo', 'ingreso')
             ->where('fecha', '>=', $fromDate)
             ->where('fecha', '<', $toExclusive)
-            ->sum('monto');
+            ->sum('monto') ?? '0');
 
-        $gastos = (string) $usuario->transacciones()
+        $gastos = (string) ($usuario->transacciones()
             ->where('tipo', 'gasto')
             ->where('fecha', '>=', $fromDate)
             ->where('fecha', '<', $toExclusive)
-            ->sum('monto');
+            ->sum('monto') ?? '0');
 
         return [
             'ingresos' => $ingresos ?: '0',

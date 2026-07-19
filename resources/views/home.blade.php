@@ -40,7 +40,7 @@
 
                 <x-dashboard.period-summary
                     :title="__('This month')"
-                    :subtitle="now()->translatedFormat('F Y')"
+                    :subtitle="\App\Support\DateFormat::monthYear(now())"
                     :ingresos="$summary['month']['ingresos']"
                     :gastos="$summary['month']['gastos']"
                     :neto="$summary['month']['neto']"
