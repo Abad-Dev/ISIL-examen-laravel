@@ -80,11 +80,12 @@
                     type="number"
                     step="0.01"
                     min="0"
-                    :label="__('Balance')"
-                    icon="heroicon-o-calculator"
+                    :label="__('Balance in soles')"
+                    icon="heroicon-o-banknotes"
                     value="{{ old('saldo') }}"
-                    placeholder="{{ __('Optional') }}"
+                    placeholder="0.00"
                 />
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
 
                 <div class="space-y-2">
                     <span class="block text-sm font-medium text-slate-700 dark:text-slate-300">

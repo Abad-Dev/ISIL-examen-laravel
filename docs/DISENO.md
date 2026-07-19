@@ -202,6 +202,12 @@ En `bootstrap/app.php` se añadió soporte de cookies/sesión en el grupo `api` 
 ## 8. Mapa de archivos clave
 
 ```
+config/
+├── money.php                 # Moneda PEN, símbolo S/, locale es_PE
+
+app/
+└── Support/Money.php         # Formateo de montos en soles
+
 resources/
 ├── css/app.css              # Tailwind v4, paleta, clases auth
 ├── sass/
@@ -211,7 +217,9 @@ resources/
     ├── layouts/
     │   ├── auth.blade.php    # Layout auth (solo Tailwind)
     │   └── app.blade.php     # Layout app (Bootstrap + Tailwind)
-    ├── components/auth/      # card, input, alert
+    ├── components/
+    │   ├── auth/             # card, input, alert
+    │   └── money.blade.php   # Montos en soles
     └── auth/                 # Vistas de autenticación
 
 lang/
@@ -235,6 +243,7 @@ Al crear pantallas nuevas (por ejemplo `/home` o CRUD de categorías):
 5. **Iconos:** Heroicons outline (`heroicon-o-*`) en campos; solid (`heroicon-s-*`) en logo o énfasis.
 6. **Semántica de color:** verde = positivo/ingreso; rojo = negativo/error; naranja = enlaces/avisos; amarillo = acentos.
 7. **Compilar:** ejecutar `npm run build` tras cambios de estilos.
+8. **Montos:** usar `<x-money />` o `App\Support\Money::format()`; la app es solo soles (PEN). Ver sección 12.
 
 ### Plantilla de layout sugerida para nuevas secciones autenticadas
 
@@ -267,4 +276,50 @@ php artisan migrate:fresh --seed
 
 ---
 
-*Última actualización: documento alineado con el estado del proyecto tras definir identidad Inaut, paleta, auth unificada e internacionalización en español.*
+## 12. Moneda: soles peruanos (PEN)
+
+Inaut opera **exclusivamente en soles peruanos**. No hay soporte multi-moneda en la interfaz ni en la lógica de negocio.
+
+### Decisión de producto
+
+| Aspecto | Valor |
+|---------|--------|
+| Código ISO | `PEN` |
+| Símbolo | `S/` |
+| Locale de formato | `es_PE` |
+| Nombre | sol peruano / soles |
+
+Todos los montos visibles al usuario (saldos de cuentas, transacciones, presupuestos, etc.) deben mostrarse en soles. Los valores numéricos en base de datos representan cantidades en PEN sin conversión.
+
+### Dónde se define
+
+| Archivo | Rol |
+|---------|-----|
+| `config/money.php` | Moneda, símbolo, locale y nombres |
+| `app/Support/Money.php` | Formateo centralizado (`Money::format()`) |
+| `resources/views/components/money.blade.php` | Componente Blade `<x-money :amount="..." />` |
+| `database/migrations/..._create_usuarios_table.php` | Columna `moneda` con default `PEN` |
+
+### Reglas de implementación
+
+1. **Mostrar montos** con `<x-money :amount="$valor" />` o `Money::format($valor)`; no usar `number_format()` suelto en vistas.
+2. **Alta de usuario:** `moneda` se asigna siempre a `PEN` (registro web y evento `creating` del modelo `Usuario`).
+3. **API:** no se permite cambiar `moneda` vía `PUT/PATCH /api/usuario`. Los endpoints de transacciones, presupuestos y cuentas asumen PEN.
+4. **Formularios:** etiquetar campos monetarios como montos en soles (ej. «Saldo en soles»).
+5. **Futuro:** si se añaden transacciones o presupuestos en la web, reutilizar el mismo formateo; no introducir selectores de moneda.
+
+### Ejemplo de formato
+
+```php
+use App\Support\Money;
+
+Money::format(1234.5); // "S/ 1,234.50" (según locale es_PE)
+```
+
+```blade
+<x-money :amount="$cuenta->saldo" />
+```
+
+---
+
+*Última actualización: documento alineado con identidad Inaut, paleta, auth unificada, internacionalización en español y moneda única PEN.*

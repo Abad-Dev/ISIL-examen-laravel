@@ -48,7 +48,7 @@
                         </div>
                         @if ($cuenta->saldo !== null)
                             <p class="shrink-0 text-sm font-semibold tabular-nums text-slate-800 dark:text-white">
-                                {{ number_format($cuenta->saldo, 2) }}
+                                <x-money :amount="$cuenta->saldo" />
                             </p>
                         @endif
                     </article>

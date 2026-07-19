@@ -56,5 +56,7 @@
     "account_type.efectivo": "Efectivo",
     "account_type.billetera_digital": "Billetera digital",
     "account_type.banco": "Banco",
-    "account_type.otro": "Otro"
+    "account_type.otro": "Otro",
+    "Balance in soles": "Saldo en soles",
+    "All amounts in the app are in Peruvian soles (PEN).": "Todos los montos de la app están en soles peruanos (PEN)."
 }

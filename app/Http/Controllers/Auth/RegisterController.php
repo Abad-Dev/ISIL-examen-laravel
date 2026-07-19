@@ -33,6 +33,7 @@ class RegisterController extends Controller
             'nombre' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
+            'moneda' => config('money.currency'),
         ]);
     }
 }

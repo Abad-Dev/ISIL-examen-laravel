@@ -38,6 +38,13 @@ class Usuario extends Authenticatable
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (Usuario $usuario) {
+            $usuario->moneda = config('money.currency');
+        });
+    }
+
     public function getNameAttribute(): string
     {
         return $this->nombre;

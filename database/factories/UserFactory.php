@@ -20,7 +20,7 @@ class UserFactory extends Factory
             'nombre' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= 'password',
-            'moneda' => 'PEN',
+            'moneda' => config('money.currency', 'PEN'),
         ];
     }
 }

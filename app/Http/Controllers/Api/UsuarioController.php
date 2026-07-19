@@ -20,7 +20,6 @@ class UsuarioController extends Controller
         $validated = $request->validate([
             'nombre' => ['sometimes', 'string', 'max:100'],
             'email' => ['sometimes', 'string', 'email', 'max:150', 'unique:usuarios,email,'.$usuario->id],
-            'moneda' => ['sometimes', 'string', 'size:3'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ]);
 
