@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Inaut') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
@@ -18,8 +18,8 @@
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body text-center p-5">
-                        <h1 class="mb-3">{{ config('app.name', 'Laravel') }}</h1>
-                        <p class="text-muted mb-4">Aplicación Laravel con autenticación Bootstrap.</p>
+                        <h1 class="mb-3">{{ config('app.name', 'Inaut') }}</h1>
+                        <p class="text-muted mb-4">Organiza tus ingresos, gastos y presupuestos en un solo lugar.</p>
 
                         @auth
                             <a href="{{ url('/home') }}" class="btn btn-primary">Ir al panel</a>

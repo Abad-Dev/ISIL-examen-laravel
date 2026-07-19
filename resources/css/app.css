@@ -21,3 +21,21 @@
         font-family: var(--font-sans);
     }
 }
+
+@layer components {
+    .auth-input {
+        @apply block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-palette-green focus:outline-none focus:ring-2 focus:ring-palette-green/30;
+    }
+
+    .auth-input-error {
+        @apply border-palette-red/70 focus:border-palette-red focus:ring-palette-red/25;
+    }
+
+    .auth-btn-primary {
+        @apply flex w-full items-center justify-center gap-2 rounded-xl bg-palette-green px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-md shadow-palette-green/30 transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-palette-green focus:ring-offset-2;
+    }
+
+    .auth-link {
+        @apply font-medium text-slate-600 transition hover:text-slate-900;
+    }
+}

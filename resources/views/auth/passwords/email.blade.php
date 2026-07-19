@@ -1,47 +1,40 @@
-@extends('layouts.app')
+@extends('layouts.auth')
+
+@section('title', __('Reset Password') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+    <x-auth.card :title="__('Reset Password')" :subtitle="__('Enter your email and we will send you a reset link.')">
+        @if (session('status'))
+            <x-auth.alert type="success" class="mb-5">
+                {{ session('status') }}
+            </x-auth.alert>
+        @endif
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+        <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+            @csrf
 
-                    <form method="POST" action="{{ route('password.email') }}">
-                        @csrf
+            <x-auth.input
+                :label="__('Email Address')"
+                name="email"
+                type="email"
+                icon="heroicon-o-envelope"
+                value="{{ old('email') }}"
+                required
+                autocomplete="email"
+                autofocus
+            />
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+            <button type="submit" class="auth-btn-primary">
+                <x-heroicon-o-paper-airplane class="size-5" />
+                {{ __('Send Password Reset Link') }}
+            </button>
+        </form>
+    </x-auth.card>
+@endsection
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@section('footer')
+    <a href="{{ route('login') }}" class="auth-link inline-flex items-center gap-1 underline decoration-palette-orange/60 underline-offset-2">
+        <x-heroicon-o-arrow-left class="size-4" />
+        {{ __('Back to login') }}
+    </a>
 @endsection
