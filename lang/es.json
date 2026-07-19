@@ -67,5 +67,12 @@
     "Account deleted successfully.": "Cuenta eliminada correctamente.",
     "Are you sure you want to delete this account?": "¿Seguro que quieres eliminar esta cuenta?",
     "Confirm": "Confirmar",
-    "Delete account": "Eliminar cuenta"
+    "Delete account": "Eliminar cuenta",
+    "New category": "Nueva categoría",
+    "Create category": "Crear categoría",
+    "Category created successfully.": "Categoría creada correctamente.",
+    "You have no categories yet. Create your first one.": "Aún no tienes categorías. Crea la primera.",
+    "Description": "Descripción",
+    "category_type.ingreso": "Ingreso",
+    "category_type.gasto": "Gasto"
 }

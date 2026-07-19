@@ -17,4 +17,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cuentas/{cuenta}', [App\Http\Controllers\CuentaController::class, 'destroy'])->name('cuentas.destroy');
     Route::get('/transacciones', [App\Http\Controllers\TransaccionController::class, 'index'])->name('web.transacciones.index');
     Route::get('/categorias', [App\Http\Controllers\CategoriaController::class, 'index'])->name('web.categorias.index');
+    Route::post('/categorias', [App\Http\Controllers\CategoriaController::class, 'store'])->name('web.categorias.store');
 });
