@@ -17,8 +17,12 @@ class CategoriaController extends Controller
 
     public function index(): View
     {
+        $categorias = auth()->user()->categorias()->orderBy('orden')->orderBy('nombre')->get();
+
         return view('categorias.index', [
-            'categorias' => auth()->user()->categorias()->orderBy('tipo')->orderBy('orden')->orderBy('nombre')->get(),
+            'categorias' => $categorias,
+            'categoriasGasto' => $categorias->where('tipo', 'gasto')->values(),
+            'categoriasIngreso' => $categorias->where('tipo', 'ingreso')->values(),
             'icons' => config('categorias.icons'),
             'colors' => config('categorias.colors'),
         ]);
