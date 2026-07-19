@@ -2,17 +2,23 @@
     'icons',
     'colors',
     'open' => false,
+    'editCategoriaId' => null,
 ])
 
 @php
+    $isEdit = $editCategoriaId !== null;
     $selectedIcon = old('icon', $icons[0]);
     $selectedColor = old('color_hex', $colors[0]);
+    $formAction = $isEdit ? route('web.categorias.update', $editCategoriaId) : route('web.categorias.store');
 @endphp
 
 <div
     id="categoria-modal"
     class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center {{ $open ? '' : 'hidden' }}"
     data-categoria-modal
+    data-categoria-modal-mode="{{ $isEdit ? 'edit' : 'create' }}"
+    data-create-title="{{ __('New category') }}"
+    data-edit-title="{{ __('Edit category') }}"
     role="dialog"
     aria-modal="true"
     aria-labelledby="categoria-modal-title"
@@ -28,8 +34,8 @@
         </div>
 
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-            <h2 id="categoria-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white">
-                {{ __('New category') }}
+            <h2 id="categoria-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white" data-categoria-modal-title>
+                {{ $isEdit ? __('Edit category') : __('New category') }}
             </h2>
             <button
                 type="button"
@@ -41,8 +47,17 @@
             </button>
         </div>
 
-        <form method="POST" action="{{ route('web.categorias.store') }}" class="overflow-y-auto px-6 py-5">
+        <form
+            method="POST"
+            action="{{ $formAction }}"
+            class="overflow-y-auto px-6 py-5"
+            data-categoria-form
+            data-store-url="{{ route('web.categorias.store') }}"
+        >
             @csrf
+            @if ($isEdit)
+                @method('PUT')
+            @endif
 
             <div class="space-y-5">
                 <x-auth.input
@@ -52,6 +67,7 @@
                     value="{{ old('nombre') }}"
                     required
                     autofocus
+                    data-categoria-field="nombre"
                 />
 
                 <div class="space-y-1.5">
@@ -63,6 +79,7 @@
                         name="tipo"
                         class="auth-input @error('tipo') auth-input-error @enderror"
                         required
+                        data-categoria-field="tipo"
                     >
                         @foreach (['ingreso', 'gasto'] as $tipo)
                             <option value="{{ $tipo }}" @selected(old('tipo', 'gasto') === $tipo)>
@@ -81,6 +98,7 @@
                     icon="heroicon-o-document-text"
                     value="{{ old('descripcion') }}"
                     placeholder="{{ __('Optional') }}"
+                    data-categoria-field="descripcion"
                 />
 
                 <div class="space-y-2">
@@ -143,9 +161,23 @@
                 >
                     {{ __('Cancel') }}
                 </button>
-                <button type="submit" class="auth-btn-primary gap-2 sm:w-auto sm:px-6">
+                <button
+                    type="submit"
+                    class="auth-btn-primary gap-2 sm:w-auto sm:px-6"
+                    data-categoria-submit-create
+                    @class(['hidden' => $isEdit])
+                >
                     <x-heroicon-o-plus class="size-5 shrink-0" />
                     {{ __('Create category') }}
+                </button>
+                <button
+                    type="submit"
+                    class="auth-btn-primary gap-2 sm:w-auto sm:px-6"
+                    data-categoria-submit-edit
+                    @class(['hidden' => ! $isEdit])
+                >
+                    <x-heroicon-o-check class="size-5 shrink-0" />
+                    {{ __('Save changes') }}
                 </button>
             </div>
         </form>

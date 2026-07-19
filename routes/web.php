@@ -18,4 +18,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/transacciones', [App\Http\Controllers\TransaccionController::class, 'index'])->name('web.transacciones.index');
     Route::get('/categorias', [App\Http\Controllers\CategoriaController::class, 'index'])->name('web.categorias.index');
     Route::post('/categorias', [App\Http\Controllers\CategoriaController::class, 'store'])->name('web.categorias.store');
+    Route::put('/categorias/{categoria}', [App\Http\Controllers\CategoriaController::class, 'update'])->name('web.categorias.update');
+    Route::delete('/categorias/{categoria}', [App\Http\Controllers\CategoriaController::class, 'destroy'])->name('web.categorias.destroy');
 });

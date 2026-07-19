@@ -74,5 +74,11 @@
     "You have no categories yet. Create your first one.": "Aún no tienes categorías. Crea la primera.",
     "Description": "Descripción",
     "category_type.ingreso": "Ingreso",
-    "category_type.gasto": "Gasto"
+    "category_type.gasto": "Gasto",
+    "Edit category": "Editar categoría",
+    "Category updated successfully.": "Categoría actualizada correctamente.",
+    "Category deleted successfully.": "Categoría eliminada correctamente.",
+    "Delete category": "Eliminar categoría",
+    "Are you sure you want to delete this category?": "¿Seguro que quieres eliminar esta categoría?",
+    "Cannot delete category with transactions.": "No puedes eliminar una categoría que tiene transacciones."
 }
