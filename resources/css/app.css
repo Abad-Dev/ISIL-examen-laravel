@@ -9,15 +9,15 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-brand-50: oklch(0.97 0.02 277);
-    --color-brand-100: oklch(0.93 0.04 277);
-    --color-brand-200: oklch(0.87 0.08 277);
-    --color-brand-300: oklch(0.78 0.14 277);
-    --color-brand-400: oklch(0.68 0.19 277);
-    --color-brand-500: oklch(0.58 0.22 277);
-    --color-brand-600: oklch(0.5 0.22 277);
-    --color-brand-700: oklch(0.42 0.19 277);
-    --color-brand-800: oklch(0.35 0.15 277);
-    --color-brand-900: oklch(0.28 0.12 277);
-    --color-brand-950: oklch(0.2 0.08 277);
+
+    --color-palette-green: #8DDA90;
+    --color-palette-yellow: #FAFA8B;
+    --color-palette-orange: #F6C87B;
+    --color-palette-red: #DB5656;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+    }
 }

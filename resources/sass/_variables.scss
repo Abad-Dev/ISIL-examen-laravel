@@ -2,6 +2,22 @@
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
+$font-family-sans-serif: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+$font-size-base: 0.95rem;
 $line-height-base: 1.6;
+
+// Palette
+$primary: #8DDA90;
+$success: #8DDA90;
+$warning: #F6C87B;
+$danger: #DB5656;
+$yellow: #FAFA8B;
+$orange: #F6C87B;
+$red: #DB5656;
+$green: #8DDA90;
+
+$border-radius: 0.75rem;
+$border-radius-lg: 1rem;
+$card-border-width: 0;
+$input-border-radius: 0.75rem;
+$btn-border-radius: 0.75rem;
