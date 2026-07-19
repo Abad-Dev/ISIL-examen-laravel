@@ -51,6 +51,7 @@ return [
         'nombre' => 'nombre',
         'moneda' => 'moneda',
         'categoria_id' => 'categoría',
+        'cuenta_id' => 'cuenta',
         'tipo' => 'tipo',
         'monto' => 'monto',
         'descripcion' => 'descripción',

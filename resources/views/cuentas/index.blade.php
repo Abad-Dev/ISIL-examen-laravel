@@ -25,6 +25,12 @@
             </x-auth.alert>
         @endif
 
+        @if (session('error'))
+            <x-auth.alert type="error">
+                {{ session('error') }}
+            </x-auth.alert>
+        @endif
+
         @if ($cuentas->isEmpty())
             <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/40">
                 <x-heroicon-o-wallet class="mx-auto size-12 text-slate-300 dark:text-slate-600" />

@@ -31,4 +31,9 @@ class Cuenta extends Model
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
+
+    public function transacciones()
+    {
+        return $this->hasMany(Transaccion::class, 'cuenta_id');
+    }
 }

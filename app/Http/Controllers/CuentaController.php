@@ -48,6 +48,12 @@ class CuentaController extends Controller
     {
         $this->authorizeCuenta($cuenta);
 
+        if ($cuenta->transacciones()->exists()) {
+            return redirect()
+                ->route('cuentas.index')
+                ->with('error', __('Cannot delete account with transactions.'));
+        }
+
         $cuenta->delete();
 
         return redirect()

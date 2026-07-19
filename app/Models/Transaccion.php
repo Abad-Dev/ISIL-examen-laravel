@@ -13,6 +13,7 @@ class Transaccion extends Model
 
     protected $fillable = [
         'usuario_id',
+        'cuenta_id',
         'categoria_id',
         'tipo',
         'monto',
@@ -28,6 +29,11 @@ class Transaccion extends Model
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public function cuenta()
+    {
+        return $this->belongsTo(Cuenta::class, 'cuenta_id');
     }
 
     public function categoria()

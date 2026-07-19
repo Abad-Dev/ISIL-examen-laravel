@@ -3,31 +3,36 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Categoria;
+use App\Http\Requests\StoreTransaccionRequest;
+use App\Http\Requests\UpdateTransaccionRequest;
 use App\Models\Transaccion;
-use Illuminate\Http\Request;
+use App\Services\TransaccionSaldoService;
+use Illuminate\Support\Facades\DB;
 
 class TransaccionController extends Controller
 {
+    public function __construct(
+        private TransaccionSaldoService $saldoService
+    ) {}
+
     public function index()
     {
-        return auth()->user()->transacciones;
+        return auth()->user()
+            ->transacciones()
+            ->with(['cuenta', 'categoria'])
+            ->orderByDesc('fecha')
+            ->orderByDesc('id')
+            ->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreTransaccionRequest $request)
     {
-        $validated = $request->validate([
-            'categoria_id' => ['required', 'exists:categorias,id'],
-            'tipo' => ['required', 'in:ingreso,gasto'],
-            'monto' => ['required', 'numeric', 'min:0.01'],
-            'descripcion' => ['nullable', 'string', 'max:255'],
-            'fecha' => ['required', 'date'],
-        ]);
+        $transaccion = DB::transaction(function () use ($request) {
+            $transaccion = auth()->user()->transacciones()->create($request->validated());
+            $this->saldoService->apply($transaccion);
 
-        $categoria = Categoria::findOrFail($validated['categoria_id']);
-        $this->authorizeCategoriaOwner($categoria);
-
-        $transaccion = auth()->user()->transacciones()->create($validated);
+            return $transaccion->load(['cuenta', 'categoria']);
+        });
 
         return response()->json($transaccion, 201);
     }
@@ -36,27 +41,20 @@ class TransaccionController extends Controller
     {
         $this->authorizeOwner($transaccion);
 
-        return $transaccion;
+        return $transaccion->load(['cuenta', 'categoria']);
     }
 
-    public function update(Request $request, Transaccion $transaccion)
+    public function update(UpdateTransaccionRequest $request, Transaccion $transaccion)
     {
         $this->authorizeOwner($transaccion);
 
-        $validated = $request->validate([
-            'categoria_id' => ['sometimes', 'exists:categorias,id'],
-            'tipo' => ['sometimes', 'in:ingreso,gasto'],
-            'monto' => ['sometimes', 'numeric', 'min:0.01'],
-            'descripcion' => ['nullable', 'string', 'max:255'],
-            'fecha' => ['sometimes', 'date'],
-        ]);
+        $transaccion = DB::transaction(function () use ($request, $transaccion) {
+            $original = $transaccion->only(['cuenta_id', 'tipo', 'monto']);
+            $transaccion->update($request->validated());
+            $this->saldoService->syncOnUpdate($transaccion, $original);
 
-        if (isset($validated['categoria_id'])) {
-            $categoria = Categoria::findOrFail($validated['categoria_id']);
-            $this->authorizeCategoriaOwner($categoria);
-        }
-
-        $transaccion->update($validated);
+            return $transaccion->load(['cuenta', 'categoria']);
+        });
 
         return response()->json($transaccion);
     }
@@ -65,7 +63,10 @@ class TransaccionController extends Controller
     {
         $this->authorizeOwner($transaccion);
 
-        $transaccion->delete();
+        DB::transaction(function () use ($transaccion) {
+            $this->saldoService->reverse($transaccion);
+            $transaccion->delete();
+        });
 
         return response()->noContent();
     }
@@ -73,13 +74,6 @@ class TransaccionController extends Controller
     private function authorizeOwner(Transaccion $transaccion): void
     {
         if ($transaccion->usuario_id !== auth()->id()) {
-            abort(403);
-        }
-    }
-
-    private function authorizeCategoriaOwner(Categoria $categoria): void
-    {
-        if ($categoria->usuario_id !== auth()->id()) {
             abort(403);
         }
     }
