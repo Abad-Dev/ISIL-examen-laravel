@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/blade-ui-kit/blade-heroicons/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -24,7 +26,7 @@
 
 @layer components {
     .auth-input {
-        @apply block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-palette-green focus:outline-none focus:ring-2 focus:ring-palette-green/30;
+        @apply block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-palette-green focus:outline-none focus:ring-2 focus:ring-palette-green/30 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder:text-slate-500;
     }
 
     .auth-input-error {
@@ -32,10 +34,14 @@
     }
 
     .auth-btn-primary {
-        @apply flex w-full items-center justify-center gap-2 rounded-xl bg-palette-green px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-md shadow-palette-green/30 transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-palette-green focus:ring-offset-2;
+        @apply flex w-full items-center justify-center gap-2 rounded-xl bg-palette-green px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-md shadow-palette-green/30 transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-palette-green focus:ring-offset-2 dark:shadow-palette-green/20;
     }
 
     .auth-link {
-        @apply font-medium text-slate-600 transition hover:text-slate-900;
+        @apply font-medium text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white;
+    }
+
+    .theme-selector {
+        @apply rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm transition focus:border-palette-green focus:outline-none focus:ring-2 focus:ring-palette-green/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200;
     }
 }

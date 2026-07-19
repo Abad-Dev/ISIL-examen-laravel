@@ -28,5 +28,9 @@
     "Choose a new password for your account.": "Elige una nueva contraseña para tu cuenta.",
     "Organize your income, expenses and budgets in one place.": "Organiza tus ingresos, gastos y presupuestos en un solo lugar.",
     "Go to dashboard": "Ir al panel",
-    "Sign in": "Iniciar sesión"
+    "Sign in": "Iniciar sesión",
+    "Theme": "Tema",
+    "Light mode": "Modo claro",
+    "Dark mode": "Modo oscuro",
+    "System theme": "Sistema"
 }
