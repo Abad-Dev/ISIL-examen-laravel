@@ -46,12 +46,17 @@
                     :neto="$summary['month']['neto']"
                 />
             </div>
+
+            <x-dashboard.expenses-chart
+                :chart="$expensesChart"
+                :navigation="$chartNavigation"
+            />
         @endif
     </div>
 @endsection
 
 @if ($cuentas->isNotEmpty())
     @push('scripts')
-        @vite('resources/js/quick-transaction.js')
+        @vite(['resources/js/quick-transaction.js', 'resources/js/expenses-chart.js'])
     @endpush
 @endif

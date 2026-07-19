@@ -31,6 +31,40 @@ class DashboardSummaryService
         ];
     }
 
+    public function expensesByCategoryForMonth(Usuario $usuario, Carbon $month): array
+    {
+        $fromDate = $month->copy()->startOfMonth()->toDateString();
+        $toExclusive = $month->copy()->startOfMonth()->addMonth()->toDateString();
+
+        $categories = $usuario->transacciones()
+            ->with('categoria:id,nombre,color_hex')
+            ->where('tipo', 'gasto')
+            ->where('fecha', '>=', $fromDate)
+            ->where('fecha', '<', $toExclusive)
+            ->get()
+            ->groupBy(fn ($transaccion) => $transaccion->categoria_id ?? 'none')
+            ->map(function ($group) {
+                $transaccion = $group->first();
+
+                return [
+                    'label' => $transaccion->categoria?->nombre ?? __('No category'),
+                    'total' => round((float) $group->sum('monto'), 2),
+                    'color' => $transaccion->categoria?->color_hex ?? '#94a3b8',
+                ];
+            })
+            ->sortByDesc('total')
+            ->values()
+            ->all();
+
+        return [
+            'mes' => $month->month,
+            'anio' => $month->year,
+            'label' => $month->copy()->startOfMonth()->translatedFormat('F Y'),
+            'categories' => $categories,
+            'total' => round(array_sum(array_column($categories, 'total')), 2),
+        ];
+    }
+
     private function periodStats(Usuario $usuario, Carbon $from, Carbon $to): array
     {
         $fromDate = $from->toDateString();

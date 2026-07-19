@@ -130,5 +130,11 @@
     "Max amount": "Monto máximo",
     "Apply filters": "Aplicar filtros",
     "No transactions match your filters.": "Ninguna transacción coincide con tus filtros.",
-    "All types": "Todos los tipos"
+    "All types": "Todos los tipos",
+    "Expenses by category": "Gastos por categoría",
+    "Monthly spending breakdown by category": "Desglose mensual de gastos por categoría",
+    "Previous month": "Mes anterior",
+    "Next month": "Mes siguiente",
+    "No expenses this month.": "No hay gastos en este mes.",
+    "Invalid month.": "Mes no válido."
 }

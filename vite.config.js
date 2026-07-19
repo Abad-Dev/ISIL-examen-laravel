@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/categoria-modal.js',
                 'resources/js/transaccion-modal.js',
                 'resources/js/quick-transaction.js',
+                'resources/js/expenses-chart.js',
             ],
             refresh: true,
         }),
