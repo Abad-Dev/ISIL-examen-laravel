@@ -15,8 +15,20 @@ class Categoria extends Model
         'usuario_id',
         'nombre',
         'tipo',
-        'color',
+        'icon',
+        'color_hex',
+        'activo',
+        'orden',
+        'descripcion',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'activo' => 'boolean',
+            'orden' => 'integer',
+        ];
+    }
 
     public function usuario()
     {
@@ -33,7 +45,6 @@ class Categoria extends Model
         return $this->hasMany(Presupuesto::class, 'categoria_id');
     }
 
-    // hasOne: la transaccion mas reciente registrada en esta categoria.
     public function ultimaTransaccion()
     {
         return $this->hasOne(Transaccion::class, 'categoria_id')->latestOfMany('fecha');

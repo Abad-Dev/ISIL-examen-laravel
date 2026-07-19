@@ -18,7 +18,11 @@ class CategoriaController extends Controller
         $validated = $request->validate([
             'nombre' => ['required', 'string', 'max:80'],
             'tipo' => ['required', 'in:ingreso,gasto'],
-            'color' => ['nullable', 'string', 'size:7'],
+            'icon' => ['required', 'string', 'max:50'],
+            'color_hex' => ['nullable', 'string', 'size:7'],
+            'activo' => ['sometimes', 'boolean'],
+            'orden' => ['sometimes', 'integer', 'min:0'],
+            'descripcion' => ['nullable', 'string', 'max:255'],
         ]);
 
         $categoria = auth()->user()->categorias()->create($validated);
@@ -40,7 +44,11 @@ class CategoriaController extends Controller
         $validated = $request->validate([
             'nombre' => ['sometimes', 'string', 'max:80'],
             'tipo' => ['sometimes', 'in:ingreso,gasto'],
-            'color' => ['nullable', 'string', 'size:7'],
+            'icon' => ['sometimes', 'string', 'max:50'],
+            'color_hex' => ['nullable', 'string', 'size:7'],
+            'activo' => ['sometimes', 'boolean'],
+            'orden' => ['sometimes', 'integer', 'min:0'],
+            'descripcion' => ['nullable', 'string', 'max:255'],
         ]);
 
         $categoria->update($validated);
