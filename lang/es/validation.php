@@ -56,6 +56,7 @@ return [
         'descripcion' => 'descripción',
         'fecha' => 'fecha',
         'monto_limite' => 'monto límite',
+        'saldo' => 'saldo en soles',
         'mes' => 'mes',
         'anio' => 'año',
     ],

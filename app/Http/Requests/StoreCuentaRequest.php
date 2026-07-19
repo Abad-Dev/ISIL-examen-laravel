@@ -14,7 +14,7 @@ class StoreCuentaRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if ($this->saldo === '' || $this->saldo === null) {
+        if ($this->saldo === '') {
             $this->merge(['saldo' => null]);
         }
     }
@@ -24,7 +24,7 @@ class StoreCuentaRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:80'],
             'tipo' => ['required', 'in:efectivo,billetera_digital,banco,otro'],
-            'saldo' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'saldo' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'icon' => ['required', 'string', Rule::in(config('cuentas.icons'))],
             'color_hex' => ['required', 'string', Rule::in(config('cuentas.colors'))],
         ];

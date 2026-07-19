@@ -84,6 +84,7 @@
                     icon="heroicon-o-banknotes"
                     value="{{ old('saldo') }}"
                     placeholder="0.00"
+                    required
                 />
                 <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
 
