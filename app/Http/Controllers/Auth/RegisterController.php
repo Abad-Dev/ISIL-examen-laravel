@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
+use App\Services\UsuarioOnboardingService;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,8 +14,9 @@ class RegisterController extends Controller
 
     protected $redirectTo = '/home';
 
-    public function __construct()
-    {
+    public function __construct(
+        private UsuarioOnboardingService $onboarding
+    ) {
         $this->middleware('guest');
     }
 
@@ -29,11 +31,15 @@ class RegisterController extends Controller
 
     protected function create(array $data): Usuario
     {
-        return Usuario::create([
+        $usuario = Usuario::create([
             'nombre' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
             'moneda' => config('money.currency'),
         ]);
+
+        $this->onboarding->seed($usuario);
+
+        return $usuario;
     }
 }
