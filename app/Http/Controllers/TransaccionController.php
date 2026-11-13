@@ -25,7 +25,7 @@ class TransaccionController extends Controller
         $filters = $request->validated();
 
         $transacciones = $usuario->transacciones()
-            ->with(['cuenta', 'categoria'])
+            ->with(['cuenta', 'cuentaDestino', 'categoria'])
             ->filter($filters)
             ->orderByDesc('fecha')
             ->orderByDesc('id')
@@ -43,7 +43,7 @@ class TransaccionController extends Controller
     public function store(StoreTransaccionRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request) {
-            $transaccion = auth()->user()->transacciones()->create($request->validated());
+            $transaccion = auth()->user()->transacciones()->create($request->transaccionData());
             $this->saldoService->apply($transaccion);
         });
 
@@ -57,8 +57,8 @@ class TransaccionController extends Controller
         $this->authorizeTransaccion($transaccion);
 
         DB::transaction(function () use ($request, $transaccion) {
-            $original = $transaccion->only(['cuenta_id', 'tipo', 'monto']);
-            $transaccion->update($request->validated());
+            $original = $transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto']);
+            $transaccion->update($request->transaccionData());
             $this->saldoService->syncOnUpdate($transaccion, $original);
         });
 

@@ -4,7 +4,7 @@
 @section('mobile-title', __('Dashboard'))
 
 @section('content')
-    <div class="mx-auto max-w-5xl space-y-6">
+    <div class="mx-auto max-w-2xl space-y-6">
         @if (session('status'))
             <x-auth.alert type="success">
                 {{ session('status') }}
@@ -22,41 +22,13 @@
         @else
             <x-dashboard.quick-transaction :cuentas="$cuentas" :categorias="$categorias" />
 
-            <div class="grid gap-4 lg:grid-cols-3">
-                <x-dashboard.today-summary
-                    :total-balance="$summary['totalBalance']"
-                    :ingresos="$summary['today']['ingresos']"
-                    :gastos="$summary['today']['gastos']"
-                    :neto="$summary['today']['neto']"
-                />
-
-                <x-dashboard.period-summary
-                    :title="__('This week')"
-                    :subtitle="__('Monday to Sunday')"
-                    :ingresos="$summary['week']['ingresos']"
-                    :gastos="$summary['week']['gastos']"
-                    :neto="$summary['week']['neto']"
-                />
-
-                <x-dashboard.period-summary
-                    :title="__('This month')"
-                    :subtitle="\App\Support\DateFormat::monthYear(now())"
-                    :ingresos="$summary['month']['ingresos']"
-                    :gastos="$summary['month']['gastos']"
-                    :neto="$summary['month']['neto']"
-                />
-            </div>
-
-            <x-dashboard.expenses-chart
-                :chart="$expensesChart"
-                :navigation="$chartNavigation"
-            />
+            <x-dashboard.account-balances :cuentas="$cuentas" :total-balance="$totalBalance" />
         @endif
     </div>
 @endsection
 
 @if ($cuentas->isNotEmpty())
     @push('scripts')
-        @vite(['resources/js/quick-transaction.js', 'resources/js/expenses-chart.js'])
+        @vite('resources/js/quick-transaction.js')
     @endpush
 @endif

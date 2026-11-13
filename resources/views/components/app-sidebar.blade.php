@@ -1,6 +1,7 @@
 @php
     $links = [
         ['route' => 'home', 'pattern' => 'home', 'label' => __('Dashboard'), 'icon' => 'heroicon-o-home'],
+        ['route' => 'resumen', 'pattern' => 'resumen', 'label' => __('Summary'), 'icon' => 'heroicon-o-chart-pie'],
         ['route' => 'cuentas.index', 'pattern' => 'cuentas.*', 'label' => __('Accounts'), 'icon' => 'heroicon-o-wallet'],
         ['route' => 'web.transacciones.index', 'pattern' => 'web.transacciones.*', 'label' => __('Transactions'), 'icon' => 'heroicon-o-arrows-right-left'],
         ['route' => 'web.categorias.index', 'pattern' => 'web.categorias.*', 'label' => __('Categories'), 'icon' => 'heroicon-o-tag'],

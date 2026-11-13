@@ -26,7 +26,24 @@ function initTransaccionModal() {
         ? Array.from(categoriaField.querySelectorAll('option[data-categoria-tipo]'))
         : [];
 
+    const cuentaDestinoField = form?.querySelector('[data-transaccion-field="cuenta_destino_id"]');
+    const categoriaWrap = form?.querySelector('[data-transaccion-categoria-wrap]');
+    const cuentaDestinoWrap = form?.querySelector('[data-transaccion-cuenta-destino-wrap]');
+
+    const syncTransferencia = () => {
+        const isTransferencia = tipoField?.value === 'transferencia';
+
+        categoriaWrap?.classList.toggle('hidden', isTransferencia);
+        cuentaDestinoWrap?.classList.toggle('hidden', !isTransferencia);
+
+        if (cuentaDestinoField) {
+            cuentaDestinoField.required = isTransferencia;
+        }
+    };
+
     const filterCategorias = () => {
+        syncTransferencia();
+
         if (!tipoField || !categoriaField) {
             return;
         }
@@ -97,6 +114,10 @@ function initTransaccionModal() {
             categoriaField.value = isEdit ? data.categoriaId ?? '' : '';
         }
 
+        if (cuentaDestinoField) {
+            cuentaDestinoField.value = isEdit ? data.cuentaDestinoId ?? '' : '';
+        }
+
         if (montoField) {
             montoField.value = isEdit ? data.monto ?? '' : '';
         }
@@ -133,6 +154,7 @@ function initTransaccionModal() {
                 openModal('edit', {
                     updateUrl: element.dataset.transaccionUpdateUrl,
                     cuentaId: element.dataset.transaccionCuentaId,
+                    cuentaDestinoId: element.dataset.transaccionCuentaDestinoId,
                     categoriaId: element.dataset.transaccionCategoriaId,
                     tipo: element.dataset.transaccionTipo,
                     monto: element.dataset.transaccionMonto,

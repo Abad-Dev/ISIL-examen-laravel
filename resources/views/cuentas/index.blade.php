@@ -52,9 +52,20 @@
                             <div class="min-w-0 flex-1">
                                 <h3 class="truncate font-semibold text-slate-800 dark:text-white">{{ $cuenta->nombre }}</h3>
                                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __("account_type.{$cuenta->tipo}") }}</p>
+                                @if ($cuenta->principal)
+                                    <p class="mt-0.5 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                        <x-heroicon-o-link class="size-3.5 shrink-0" />
+                                        <span class="truncate">{{ __('Shares balance with :name', ['name' => $cuenta->principal->nombre]) }}</span>
+                                    </p>
+                                @elseif ($cuenta->vinculadas->isNotEmpty())
+                                    <p class="mt-0.5 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                        <x-heroicon-o-link class="size-3.5 shrink-0" />
+                                        <span class="truncate">{{ __('Unified with :names', ['names' => $cuenta->vinculadas->pluck('nombre')->join(', ')]) }}</span>
+                                    </p>
+                                @endif
                             </div>
                             <p class="shrink-0 text-sm font-semibold tabular-nums text-slate-800 dark:text-white">
-                                <x-money :amount="$cuenta->saldo" />
+                                <x-money :amount="$cuenta->saldo_actual" />
                             </p>
                         </div>
 
@@ -67,6 +78,7 @@
                                 data-cuenta-nombre="{{ $cuenta->nombre }}"
                                 data-cuenta-tipo="{{ $cuenta->tipo }}"
                                 data-cuenta-saldo="{{ $cuenta->saldo }}"
+                                data-cuenta-principal-id="{{ $cuenta->cuenta_principal_id }}"
                                 data-cuenta-icon="{{ $cuenta->icon }}"
                                 data-cuenta-color="{{ $cuenta->color_hex }}"
                                 data-cuenta-update-url="{{ route('cuentas.update', $cuenta) }}"
@@ -103,6 +115,7 @@
 
     <x-cuentas.form-modal
         :icons="$icons"
+        :cuentas-principales="$cuentasPrincipales"
         :colors="$colors"
         :open="$errors->isNotEmpty()"
         :edit-cuenta-id="old('_cuenta_id')"

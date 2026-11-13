@@ -81,30 +81,63 @@ function initQuickTransaction() {
     const categoriaOptions = categoriaField
         ? Array.from(categoriaField.querySelectorAll('option[data-categoria-tipo]'))
         : [];
+    const nuevaCategoriaWrap = form.querySelector('[data-quick-transaction-nueva-categoria]');
+    const nuevaCategoriaInput = nuevaCategoriaWrap?.querySelector('input');
+    const nuevaCategoriaValue = 'nueva';
 
-    const firstMatchingCategoria = (tipo) => {
-        const match = categoriaOptions.find((option) => option.dataset.categoriaTipo === tipo);
+    const syncNuevaCategoria = () => {
+        const isNueva = categoriaField?.value === nuevaCategoriaValue && form.dataset.tipo !== 'transferencia';
 
-        return match ? match.value : '';
+        nuevaCategoriaWrap?.classList.toggle('hidden', !isNueva);
+
+        if (nuevaCategoriaInput) {
+            nuevaCategoriaInput.disabled = !isNueva;
+            nuevaCategoriaInput.required = isNueva;
+        }
     };
 
     const syncCategoriaForTipo = (tipo) => {
-        if (!categoriaField) {
+        if (!categoriaField || tipo === 'transferencia') {
             return;
         }
+
+        categoriaOptions.forEach((option) => {
+            const matches = option.dataset.categoriaTipo === tipo;
+            option.hidden = !matches;
+            option.disabled = !matches;
+        });
 
         const selectedOption = categoriaField.selectedOptions[0];
 
         if (selectedOption?.dataset.categoriaTipo && selectedOption.dataset.categoriaTipo !== tipo) {
-            categoriaField.value = firstMatchingCategoria(tipo);
+            const match = categoriaOptions.find((option) => option.dataset.categoriaTipo === tipo);
+            categoriaField.value = match ? match.value : '';
         }
     };
 
-    form.querySelectorAll('[data-quick-transaction-submit]').forEach((button) => {
-        button.addEventListener('click', () => {
-            syncCategoriaForTipo(button.dataset.quickTransactionSubmit);
+    const setTipo = (tipo) => {
+        form.dataset.tipo = tipo;
+        syncCategoriaForTipo(tipo);
+        syncNuevaCategoria();
+    };
+
+    form.querySelectorAll('[data-quick-transaction-tipo]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            if (radio.checked) {
+                setTipo(radio.value);
+            }
         });
     });
+
+    categoriaField?.addEventListener('change', () => {
+        syncNuevaCategoria();
+
+        if (categoriaField.value === nuevaCategoriaValue) {
+            nuevaCategoriaInput?.focus();
+        }
+    });
+
+    setTipo(form.querySelector('[data-quick-transaction-tipo]:checked')?.value || 'gasto');
 
     form.addEventListener('submit', (event) => {
         const cents = parseAmountToCents(hiddenInput?.value);

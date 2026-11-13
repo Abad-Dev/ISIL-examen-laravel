@@ -19,7 +19,7 @@ class TransaccionController extends Controller
     {
         return auth()->user()
             ->transacciones()
-            ->with(['cuenta', 'categoria'])
+            ->with(['cuenta', 'cuentaDestino', 'categoria'])
             ->orderByDesc('fecha')
             ->orderByDesc('id')
             ->get();
@@ -28,10 +28,10 @@ class TransaccionController extends Controller
     public function store(StoreTransaccionRequest $request)
     {
         $transaccion = DB::transaction(function () use ($request) {
-            $transaccion = auth()->user()->transacciones()->create($request->validated());
+            $transaccion = auth()->user()->transacciones()->create($request->transaccionData());
             $this->saldoService->apply($transaccion);
 
-            return $transaccion->load(['cuenta', 'categoria']);
+            return $transaccion->load(['cuenta', 'cuentaDestino', 'categoria']);
         });
 
         return response()->json($transaccion, 201);
@@ -41,7 +41,7 @@ class TransaccionController extends Controller
     {
         $this->authorizeOwner($transaccion);
 
-        return $transaccion->load(['cuenta', 'categoria']);
+        return $transaccion->load(['cuenta', 'cuentaDestino', 'categoria']);
     }
 
     public function update(UpdateTransaccionRequest $request, Transaccion $transaccion)
@@ -49,11 +49,11 @@ class TransaccionController extends Controller
         $this->authorizeOwner($transaccion);
 
         $transaccion = DB::transaction(function () use ($request, $transaccion) {
-            $original = $transaccion->only(['cuenta_id', 'tipo', 'monto']);
-            $transaccion->update($request->validated());
+            $original = $transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto']);
+            $transaccion->update($request->transaccionData());
             $this->saldoService->syncOnUpdate($transaccion, $original);
 
-            return $transaccion->load(['cuenta', 'categoria']);
+            return $transaccion->load(['cuenta', 'cuentaDestino', 'categoria']);
         });
 
         return response()->json($transaccion);

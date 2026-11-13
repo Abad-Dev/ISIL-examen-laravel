@@ -1,5 +1,6 @@
 @props([
     'icons',
+    'cuentasPrincipales' => collect(),
     'colors',
     'open' => false,
     'editCuentaId' => null,
@@ -92,19 +93,43 @@
                     @enderror
                 </div>
 
-                <x-auth.input
-                    name="saldo"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    :label="__('Balance in soles')"
-                    icon="heroicon-o-banknotes"
-                    value="{{ old('saldo') }}"
-                    placeholder="0.00"
-                    required
-                    data-cuenta-field="saldo"
-                />
-                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
+                <div class="space-y-1.5">
+                    <label for="cuenta-principal" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        {{ __('Shares balance with') }} <span class="font-normal text-slate-400">({{ __('Optional') }})</span>
+                    </label>
+                    <select
+                        id="cuenta-principal"
+                        name="cuenta_principal_id"
+                        class="auth-input @error('cuenta_principal_id') auth-input-error @enderror"
+                        data-cuenta-field="cuenta_principal_id"
+                    >
+                        <option value="">{{ __('Own balance') }}</option>
+                        @foreach ($cuentasPrincipales as $principal)
+                            <option value="{{ $principal->id }}" @selected((string) old('cuenta_principal_id') === (string) $principal->id)>
+                                {{ $principal->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Unified accounts share one balance: an expense in one is also deducted from the others.') }}</p>
+                    @error('cuenta_principal_id')
+                        <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div @class(['space-y-1.5', 'hidden' => old('cuenta_principal_id')]) data-cuenta-saldo-wrap>
+                    <x-auth.input
+                        name="saldo"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        :label="__('Balance in soles')"
+                        icon="heroicon-o-banknotes"
+                        value="{{ old('saldo') }}"
+                        placeholder="0.00"
+                        data-cuenta-field="saldo"
+                    />
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
+                </div>
 
                 <div class="space-y-2">
                     <span class="block text-sm font-medium text-slate-700 dark:text-slate-300">

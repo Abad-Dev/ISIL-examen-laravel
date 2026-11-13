@@ -70,7 +70,7 @@
                         required
                         data-transaccion-field="tipo"
                     >
-                        @foreach (['ingreso', 'gasto'] as $tipo)
+                        @foreach (['ingreso', 'gasto', 'transferencia'] as $tipo)
                             <option value="{{ $tipo }}" @selected($selectedTipo === $tipo)>
                                 {{ __("transaction_type.{$tipo}") }}
                             </option>
@@ -104,7 +104,29 @@
                     @enderror
                 </div>
 
-                <div class="space-y-1.5">
+                <div @class(['space-y-1.5', 'hidden' => $selectedTipo !== 'transferencia']) data-transaccion-cuenta-destino-wrap>
+                    <label for="transaccion-cuenta-destino" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        {{ __('Destination account') }}
+                    </label>
+                    <select
+                        id="transaccion-cuenta-destino"
+                        name="cuenta_destino_id"
+                        class="auth-input @error('cuenta_destino_id') auth-input-error @enderror"
+                        data-transaccion-field="cuenta_destino_id"
+                    >
+                        <option value="">{{ __('Select an account') }}</option>
+                        @foreach ($cuentas as $cuenta)
+                            <option value="{{ $cuenta->id }}" @selected((string) old('cuenta_destino_id') === (string) $cuenta->id)>
+                                {{ $cuenta->nombre }} ({{ __("account_type.{$cuenta->tipo}") }})
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('cuenta_destino_id')
+                        <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div @class(['space-y-1.5', 'hidden' => $selectedTipo === 'transferencia']) data-transaccion-categoria-wrap>
                     <label for="transaccion-categoria" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         {{ __('Category') }} <span class="font-normal text-slate-400">({{ __('Optional') }})</span>
                     </label>

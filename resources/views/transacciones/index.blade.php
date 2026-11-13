@@ -82,6 +82,7 @@
                                                 'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
                                                 'bg-palette-green/20 text-slate-800 dark:text-palette-green' => $transaccion->tipo === 'ingreso',
                                                 'bg-palette-red/15 text-palette-red' => $transaccion->tipo === 'gasto',
+                                                'bg-sky-500/15 text-sky-600 dark:text-sky-400' => $transaccion->esTransferencia(),
                                             ])>
                                                 {{ __("transaction_type.{$transaccion->tipo}") }}
                                             </span>
@@ -89,7 +90,9 @@
 
                                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                             {{ $transaccion->cuenta->nombre }}
-                                            @if ($transaccion->categoria)
+                                            @if ($transaccion->esTransferencia())
+                                                → {{ $transaccion->cuentaDestino?->nombre }}
+                                            @elseif ($transaccion->categoria)
                                                 · {{ $transaccion->categoria->nombre }}
                                             @else
                                                 · {{ __('No category') }}
@@ -104,8 +107,9 @@
                                         'shrink-0 text-base font-semibold tabular-nums',
                                         'text-palette-green' => $transaccion->tipo === 'ingreso',
                                         'text-palette-red' => $transaccion->tipo === 'gasto',
+                                        'text-sky-600 dark:text-sky-400' => $transaccion->esTransferencia(),
                                     ])>
-                                        {{ $transaccion->tipo === 'ingreso' ? '+' : '−' }}<x-money :amount="$transaccion->monto" />
+                                        {{ match ($transaccion->tipo) { 'ingreso' => '+', 'gasto' => '−', default => '' } }}<x-money :amount="$transaccion->monto" />
                                     </p>
 
                                     <div class="flex items-center gap-2">
@@ -114,6 +118,7 @@
                                             class="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                             data-transaccion-modal-open="edit"
                                             data-transaccion-cuenta-id="{{ $transaccion->cuenta_id }}"
+                                            data-transaccion-cuenta-destino-id="{{ $transaccion->cuenta_destino_id }}"
                                             data-transaccion-categoria-id="{{ $transaccion->categoria_id }}"
                                             data-transaccion-tipo="{{ $transaccion->tipo }}"
                                             data-transaccion-monto="{{ $transaccion->monto }}"

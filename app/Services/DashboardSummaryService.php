@@ -14,7 +14,7 @@ class DashboardSummaryService
         $now = Carbon::now(config('app.timezone'));
 
         return [
-            'totalBalance' => (string) ($usuario->cuentas()->sum('saldo') ?? '0'),
+            'totalBalance' => (string) ($usuario->cuentas()->conSaldoPropio()->sum('saldo') ?? '0'),
             'today' => $this->periodStats(
                 $usuario,
                 $now->copy()->startOfDay(),

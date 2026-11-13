@@ -48,7 +48,7 @@ class FilterTransaccionRequest extends FormRequest
                     }
                 },
             ],
-            'tipo' => ['nullable', 'in:ingreso,gasto'],
+            'tipo' => ['nullable', 'in:ingreso,gasto,transferencia'],
             'monto_min' => ['nullable', 'numeric', 'min:0'],
             'monto_max' => ['nullable', 'numeric', 'min:0', Rule::when(
                 $this->filled('monto_min'),

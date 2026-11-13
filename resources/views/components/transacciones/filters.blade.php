@@ -118,7 +118,7 @@
                     </label>
                     <select id="filter-tipo" name="tipo" class="auth-input @error('tipo') auth-input-error @enderror">
                         <option value="">{{ __('All types') }}</option>
-                        @foreach (['ingreso', 'gasto'] as $tipo)
+                        @foreach (['ingreso', 'gasto', 'transferencia'] as $tipo)
                             <option value="{{ $tipo }}" @selected(($filters['tipo'] ?? '') === $tipo)>
                                 {{ __("transaction_type.{$tipo}") }}
                             </option>

@@ -16,6 +16,7 @@ class Transaccion extends Model
     protected $fillable = [
         'usuario_id',
         'cuenta_id',
+        'cuenta_destino_id',
         'categoria_id',
         'tipo',
         'monto',
@@ -40,7 +41,10 @@ class Transaccion extends Model
         }
 
         if (! empty($filters['cuenta_id'])) {
-            $query->where('cuenta_id', $filters['cuenta_id']);
+            $query->where(function (Builder $query) use ($filters) {
+                $query->where('cuenta_id', $filters['cuenta_id'])
+                    ->orWhere('cuenta_destino_id', $filters['cuenta_id']);
+            });
         }
 
         if (! empty($filters['categoria_id'])) {
@@ -74,6 +78,16 @@ class Transaccion extends Model
     public function cuenta()
     {
         return $this->belongsTo(Cuenta::class, 'cuenta_id');
+    }
+
+    public function cuentaDestino()
+    {
+        return $this->belongsTo(Cuenta::class, 'cuenta_destino_id');
+    }
+
+    public function esTransferencia(): bool
+    {
+        return $this->tipo === 'transferencia';
     }
 
     public function categoria()

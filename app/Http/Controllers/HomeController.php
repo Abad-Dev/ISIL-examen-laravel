@@ -14,14 +14,24 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(DashboardMonthRequest $request)
+    public function index()
+    {
+        $usuario = auth()->user();
+
+        return view('home', [
+            'cuentas' => $usuario->cuentas()->with('principal')->orderBy('nombre')->get(),
+            'categorias' => $usuario->categorias()->orderBy('tipo')->orderBy('nombre')->get(),
+            'totalBalance' => (string) ($usuario->cuentas()->conSaldoPropio()->sum('saldo') ?? '0'),
+        ]);
+    }
+
+    public function resumen(DashboardMonthRequest $request)
     {
         $usuario = auth()->user();
         $chartData = $this->chartData($request);
 
-        return view('home', [
-            'cuentas' => $usuario->cuentas()->orderBy('nombre')->get(),
-            'categorias' => $usuario->categorias()->orderBy('tipo')->orderBy('nombre')->get(),
+        return view('resumen', [
+            'hasCuentas' => $usuario->cuentas()->exists(),
             'summary' => $this->dashboardSummary->forUser($usuario),
             'expensesChart' => $chartData['chart'],
             'chartNavigation' => $chartData['navigation'],

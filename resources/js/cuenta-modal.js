@@ -44,6 +44,21 @@ function initCuentaModal() {
         });
     };
 
+    const syncSaldoVisibility = () => {
+        const principalField = form?.querySelector('[data-cuenta-field="cuenta_principal_id"]');
+        const saldoWrap = form?.querySelector('[data-cuenta-saldo-wrap]');
+        const saldoField = form?.querySelector('[data-cuenta-field="saldo"]');
+        const linked = Boolean(principalField?.value);
+
+        saldoWrap?.classList.toggle('hidden', linked);
+
+        if (saldoField) {
+            saldoField.required = !linked;
+        }
+    };
+
+    form?.querySelector('[data-cuenta-field="cuenta_principal_id"]')?.addEventListener('change', syncSaldoVisibility);
+
     const setFormMode = (mode, data = {}) => {
         if (!form) {
             return;
@@ -76,6 +91,7 @@ function initCuentaModal() {
         const nombreField = form.querySelector('[data-cuenta-field="nombre"]');
         const tipoField = form.querySelector('[data-cuenta-field="tipo"]');
         const saldoField = form.querySelector('[data-cuenta-field="saldo"]');
+        const principalField = form.querySelector('[data-cuenta-field="cuenta_principal_id"]');
 
         if (nombreField) {
             nombreField.value = isEdit ? data.nombre ?? '' : '';
@@ -87,6 +103,15 @@ function initCuentaModal() {
 
         if (saldoField) {
             saldoField.value = isEdit ? data.saldo ?? '' : '';
+        }
+
+        if (principalField) {
+            principalField.value = isEdit ? data.principalId ?? '' : '';
+            // Una cuenta no puede compartir saldo consigo misma.
+            Array.from(principalField.options).forEach((option) => {
+                option.hidden = isEdit && option.value !== '' && option.value === data.id;
+            });
+            syncSaldoVisibility();
         }
 
         const icon = isEdit ? data.icon : iconInput?.value;
@@ -129,6 +154,8 @@ function initCuentaModal() {
 
             if (mode === 'edit') {
                 openModal('edit', {
+                    id: element.dataset.cuentaId,
+                    principalId: element.dataset.cuentaPrincipalId,
                     updateUrl: element.dataset.cuentaUpdateUrl,
                     nombre: element.dataset.cuentaNombre,
                     tipo: element.dataset.cuentaTipo,
