@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#8DDA90">
+    <title>Sin conexión — In-Out</title>
+    <style>
+        :root { color-scheme: light dark; --bg: #fafaf5; --fg: #1e293b; --muted: #64748b; }
+        @media (prefers-color-scheme: dark) { :root { --bg: #020617; --fg: #f1f5f9; --muted: #94a3b8; } }
+        body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 16px; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; text-align: center; }
+        img { width: 72px; height: 72px; }
+        p { color: var(--muted); }
+        button { margin-top: 8px; border: 0; border-radius: 12px; padding: 10px 20px; background: #8DDA90; color: #1e293b; font-weight: 600; font-size: 14px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <main>
+        <img src="/icons/icon-192.png" alt="">
+        <h1>Sin conexión</h1>
+        <p>Conéctate a internet para registrar tus movimientos.</p>
+        <button type="button" onclick="location.reload()">Reintentar</button>
+    </main>
+</body>
+</html>

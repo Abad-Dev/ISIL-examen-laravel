@@ -24,7 +24,7 @@
             <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-palette-green shadow-md shadow-palette-green/40 ring-4 ring-white dark:ring-slate-900">
                 <x-heroicon-s-banknotes class="size-5 text-slate-800" />
             </span>
-            <span class="truncate text-lg font-semibold tracking-tight text-slate-800 dark:text-white">{{ config('app.name', 'Inaut') }}</span>
+            <span class="truncate text-lg font-semibold tracking-tight text-slate-800 dark:text-white">{{ config('app.name', 'In-Out') }}</span>
         </a>
 
         <div class="flex shrink-0 items-center gap-2">

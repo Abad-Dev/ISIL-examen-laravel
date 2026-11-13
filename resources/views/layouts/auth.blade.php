@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('partials.pwa-head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'Inaut'))</title>
+    <title>@yield('title', config('app.name', 'In-Out'))</title>
 
     @include('partials.theme-script')
 
@@ -28,7 +29,7 @@
                 <span class="flex size-12 items-center justify-center rounded-2xl bg-palette-green shadow-md shadow-palette-green/40 ring-4 ring-white dark:ring-slate-900">
                     <x-heroicon-s-banknotes class="size-6 text-slate-800" />
                 </span>
-                <span class="text-xl font-semibold tracking-tight text-slate-800 dark:text-white">{{ config('app.name', 'Inaut') }}</span>
+                <span class="text-xl font-semibold tracking-tight text-slate-800 dark:text-white">{{ config('app.name', 'In-Out') }}</span>
             </a>
 
             <div class="relative w-full max-w-md">

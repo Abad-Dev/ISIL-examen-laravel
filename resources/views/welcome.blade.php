@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('partials.pwa-head')
 
-    <title>{{ config('app.name', 'Inaut') }}</title>
+    <title>{{ config('app.name', 'In-Out') }}</title>
 
     @include('partials.theme-script')
 
@@ -34,7 +35,7 @@
 
                 <div class="px-6 py-10 text-center sm:px-10">
                     <h1 class="text-3xl font-semibold tracking-tight text-slate-800 dark:text-white">
-                        {{ config('app.name', 'Inaut') }}
+                        {{ config('app.name', 'In-Out') }}
                     </h1>
                     <p class="mx-auto mt-3 max-w-sm text-slate-500 dark:text-slate-400">
                         {{ __('Organize your income, expenses and budgets in one place.') }}
