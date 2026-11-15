@@ -26,8 +26,26 @@
                 'auth-input',
                 'auth-input-error' => $errors->has($name),
                 'pl-10' => $icon,
+                'pr-11' => $type === 'password',
             ]) }}
+            @if ($type === 'password') data-password-input @endif
         />
+
+        @if ($type === 'password')
+            <button
+                type="button"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 transition hover:text-slate-700 focus:outline-none focus-visible:text-slate-700 dark:hover:text-slate-200 dark:focus-visible:text-slate-200"
+                aria-label="{{ __('Show password') }}"
+                aria-controls="{{ $name }}"
+                aria-pressed="false"
+                data-password-toggle
+                data-label-show="{{ __('Show password') }}"
+                data-label-hide="{{ __('Hide password') }}"
+            >
+                <x-heroicon-o-eye class="size-5" data-password-toggle-show />
+                <x-heroicon-o-eye-slash class="hidden size-5" data-password-toggle-hide />
+            </button>
+        @endif
     </div>
 
     @error($name)
