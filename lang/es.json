@@ -161,5 +161,13 @@
     "Your income and expenses at a glance.": "Tus ingresos y gastos de un vistazo.",
     "movement_type.gasto": "Egreso",
     "movement_type.ingreso": "Ingreso",
-    "movement_type.transferencia": "Transferencia"
+    "movement_type.transferencia": "Transferencia",
+    "Currency": "Moneda",
+    "Amount": "Monto",
+    "Exchange rate": "Tipo de cambio",
+    "soles per dollar": "soles por dólar",
+    "Rate": "TC",
+    "This balance is shared by all the unified accounts.": "Este saldo es compartido por todas las cuentas unificadas.",
+    "Unified accounts must use the same currency.": "Las cuentas unificadas deben usar la misma moneda.",
+    "The currency cannot be changed on an account that is already in use.": "No se puede cambiar la moneda de una cuenta que ya tiene movimientos."
 }

@@ -52,13 +52,19 @@ class CuentaController extends Controller
         $data = $request->validated();
 
         DB::transaction(function () use ($cuenta, $data) {
-            $principalId = $data['cuenta_principal_id'];
+            $principalAnterior = $cuenta->cuenta_principal_id;
+            $principalNueva = $data['cuenta_principal_id'];
 
-            if ($principalId) {
-                if ($cuenta->cuenta_principal_id === null) {
+            if ($principalNueva) {
+                $principal = Cuenta::query()->lockForUpdate()->findOrFail($principalNueva);
+
+                if ($principalAnterior === null) {
                     // Al unificar, el saldo de esta cuenta se suma al de la principal.
-                    $principal = Cuenta::query()->lockForUpdate()->findOrFail($principalId);
                     $principal->saldo = Money::add($principal->saldo ?? '0.00', $cuenta->saldo ?? '0.00');
+                    $principal->save();
+                } elseif ((int) $principalAnterior === (int) $principalNueva && $data['saldo'] !== null) {
+                    // Desde cualquier cuenta del grupo se edita el saldo compartido.
+                    $principal->saldo = $data['saldo'];
                     $principal->save();
                 }
 

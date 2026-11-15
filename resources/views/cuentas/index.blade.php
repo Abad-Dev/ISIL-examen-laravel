@@ -51,7 +51,7 @@
                             </span>
                             <div class="min-w-0 flex-1">
                                 <h3 class="truncate font-semibold text-slate-800 dark:text-white">{{ $cuenta->nombre }}</h3>
-                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __("account_type.{$cuenta->tipo}") }}</p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __("account_type.{$cuenta->tipo}") }} · {{ config("money.currencies.{$cuenta->moneda}.name") }}</p>
                                 @if ($cuenta->principal)
                                     <p class="mt-0.5 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                                         <x-heroicon-o-link class="size-3.5 shrink-0" />
@@ -65,7 +65,7 @@
                                 @endif
                             </div>
                             <p class="shrink-0 text-sm font-semibold tabular-nums text-slate-800 dark:text-white">
-                                <x-money :amount="$cuenta->saldo_actual" />
+                                <x-money :amount="$cuenta->saldo_actual" :currency="$cuenta->moneda" />
                             </p>
                         </div>
 
@@ -77,7 +77,9 @@
                                 data-cuenta-id="{{ $cuenta->id }}"
                                 data-cuenta-nombre="{{ $cuenta->nombre }}"
                                 data-cuenta-tipo="{{ $cuenta->tipo }}"
-                                data-cuenta-saldo="{{ $cuenta->saldo }}"
+                                data-cuenta-saldo="{{ $cuenta->saldo_actual }}"
+                                data-cuenta-moneda="{{ $cuenta->moneda }}"
+                                data-cuenta-principal-nombre="{{ $cuenta->principal?->nombre }}"
                                 data-cuenta-principal-id="{{ $cuenta->cuenta_principal_id }}"
                                 data-cuenta-icon="{{ $cuenta->icon }}"
                                 data-cuenta-color="{{ $cuenta->color_hex }}"

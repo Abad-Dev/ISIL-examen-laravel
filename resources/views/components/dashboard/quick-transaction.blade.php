@@ -40,7 +40,12 @@
                 data-quick-transaction-field="cuenta_id"
             >
                 @foreach ($cuentas as $cuenta)
-                    <option value="{{ $cuenta->id }}" @selected((string) $defaultCuentaId === (string) $cuenta->id)>
+                    <option
+                        value="{{ $cuenta->id }}"
+                        data-moneda="{{ $cuenta->moneda }}"
+                        data-simbolo="{{ \App\Support\Money::symbol($cuenta->moneda) }}"
+                        @selected((string) $defaultCuentaId === (string) $cuenta->id)
+                    >
                         {{ $cuenta->nombre }}
                     </option>
                 @endforeach
@@ -80,9 +85,9 @@
 
         {{-- 3. Monto --}}
         <div>
-            <label for="quick-monto-display" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Amount in soles') }}</label>
+            <label for="quick-monto-display" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Amount') }}</label>
             <div class="mt-1 flex items-baseline gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm focus-within:border-palette-green focus-within:ring-2 focus-within:ring-palette-green/30 dark:border-slate-700 dark:bg-slate-900/60 @error('monto') border-palette-red/70 @enderror">
-                <span class="text-lg font-medium text-slate-400">S/</span>
+                <span class="text-lg font-medium text-slate-400" data-quick-transaction-simbolo>{{ \App\Support\Money::symbol($cuentas->firstWhere('id', $defaultCuentaId)?->moneda) }}</span>
                 <input
                     type="hidden"
                     name="monto"
@@ -163,12 +168,40 @@
             >
                 <option value="">{{ __('Select an account') }}</option>
                 @foreach ($cuentas as $cuenta)
-                    <option value="{{ $cuenta->id }}" @selected((string) old('cuenta_destino_id') === (string) $cuenta->id)>
+                    <option
+                        value="{{ $cuenta->id }}"
+                        data-moneda="{{ $cuenta->moneda }}"
+                        data-simbolo="{{ \App\Support\Money::symbol($cuenta->moneda) }}"
+                        @selected((string) old('cuenta_destino_id') === (string) $cuenta->id)
+                    >
                         {{ $cuenta->nombre }}
                     </option>
                 @endforeach
             </select>
             @error('cuenta_destino_id')
+                <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Tipo de cambio (transferencia entre monedas distintas) --}}
+        <div @class(['space-y-1.5', 'hidden' => ! old('tipo_cambio')]) data-quick-transaction-tipo-cambio>
+            <label for="quick-tipo-cambio" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                {{ __('Exchange rate') }} <span class="font-normal text-slate-400">({{ __('soles per dollar') }})</span>
+            </label>
+            <input
+                id="quick-tipo-cambio"
+                type="number"
+                name="tipo_cambio"
+                step="0.0001"
+                min="0.0001"
+                inputmode="decimal"
+                placeholder="3.7500"
+                value="{{ old('tipo_cambio') }}"
+                class="auth-input @error('tipo_cambio') auth-input-error @enderror"
+                data-quick-transaction-field="tipo_cambio"
+            >
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-quick-transaction-conversion></p>
+            @error('tipo_cambio')
                 <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
             @enderror
         </div>

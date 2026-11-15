@@ -104,12 +104,18 @@
 
                                 <div class="flex items-center justify-between gap-4 sm:justify-end">
                                     <p @class([
-                                        'shrink-0 text-base font-semibold tabular-nums',
+                                        'shrink-0 text-right text-base font-semibold tabular-nums',
                                         'text-palette-green' => $transaccion->tipo === 'ingreso',
                                         'text-palette-red' => $transaccion->tipo === 'gasto',
                                         'text-sky-600 dark:text-sky-400' => $transaccion->esTransferencia(),
                                     ])>
-                                        {{ match ($transaccion->tipo) { 'ingreso' => '+', 'gasto' => '−', default => '' } }}<x-money :amount="$transaccion->monto" />
+                                        {{ match ($transaccion->tipo) { 'ingreso' => '+', 'gasto' => '−', default => '' } }}<x-money :amount="$transaccion->monto" :currency="$transaccion->cuenta->moneda" />
+                                        @if ($transaccion->monto_destino !== null)
+                                            <span class="block text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                → <x-money :amount="$transaccion->monto_destino" :currency="$transaccion->cuentaDestino?->moneda" />
+                                                · {{ __('Rate') }} {{ rtrim(rtrim($transaccion->tipo_cambio, '0'), '.') }}
+                                            </span>
+                                        @endif
                                     </p>
 
                                     <div class="flex items-center gap-2">
@@ -119,6 +125,7 @@
                                             data-transaccion-modal-open="edit"
                                             data-transaccion-cuenta-id="{{ $transaccion->cuenta_id }}"
                                             data-transaccion-cuenta-destino-id="{{ $transaccion->cuenta_destino_id }}"
+                                            data-transaccion-tipo-cambio="{{ $transaccion->tipo_cambio }}"
                                             data-transaccion-categoria-id="{{ $transaccion->categoria_id }}"
                                             data-transaccion-tipo="{{ $transaccion->tipo }}"
                                             data-transaccion-monto="{{ $transaccion->monto }}"

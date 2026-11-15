@@ -9,19 +9,28 @@ class Money
         return config('money.currency', 'PEN');
     }
 
-    public static function symbol(): string
+    public static function symbol(?string $currency = null): string
     {
+        if ($currency !== null && $currency !== static::currency()) {
+            return config("money.currencies.{$currency}.symbol", $currency);
+        }
+
         return config('money.symbol', 'S/');
     }
 
-    public static function format(float|string|int|null $amount): string
+    public static function format(float|string|int|null $amount, ?string $currency = null): string
     {
         if ($amount === null || $amount === '') {
-            return static::symbol().' 0.00';
+            return static::symbol($currency).' 0.00';
         }
 
         $amount = (float) $amount;
         $locale = config('money.locale', 'es_PE');
+
+        // Otras monedas usan su símbolo configurado para verse igual en todos los servidores.
+        if ($currency !== null && $currency !== static::currency()) {
+            return static::symbol($currency).' '.number_format($amount, 2, '.', ',');
+        }
 
         if (class_exists(\NumberFormatter::class)) {
             try {
@@ -37,6 +46,24 @@ class Money
         }
 
         return static::symbol().' '.number_format($amount, 2, '.', ',');
+    }
+
+    /**
+     * Convierte un monto entre soles y otra moneda con un tipo de cambio en soles por unidad.
+     */
+    public static function convert(float|string $amount, string $from, string $to, float|string $tipoCambio): string
+    {
+        $amount = (float) $amount;
+        $tipoCambio = (float) $tipoCambio;
+
+        $converted = match (true) {
+            $from === $to => $amount,
+            $from === static::currency() => $amount / $tipoCambio,
+            $to === static::currency() => $amount * $tipoCambio,
+            default => $amount,
+        };
+
+        return number_format(round($converted, 2), 2, '.', '');
     }
 
     public static function add(float|string|int|null $left, float|string|int|null $right, int $scale = 2): string

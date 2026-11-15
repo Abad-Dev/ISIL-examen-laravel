@@ -24,15 +24,15 @@
 >
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-transaccion-modal-close></div>
 
-    <div class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
-        <div class="flex h-1.5">
+    <div class="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
+        <div class="flex h-1.5 shrink-0">
             <span class="flex-1 bg-palette-green"></span>
             <span class="flex-1 bg-palette-yellow"></span>
             <span class="flex-1 bg-palette-orange"></span>
             <span class="flex-1 bg-palette-red"></span>
         </div>
 
-        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
             <h2 id="transaccion-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white" data-transaccion-modal-title>
                 {{ $isEdit ? __('Edit transaction') : __('New transaction') }}
             </h2>
@@ -49,7 +49,7 @@
         <form
             method="POST"
             action="{{ $formAction }}"
-            class="overflow-y-auto px-6 py-5"
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5"
             data-transaccion-form
             data-store-url="{{ route('web.transacciones.store') }}"
         >
@@ -94,7 +94,7 @@
                     >
                         <option value="">{{ __('Select an account') }}</option>
                         @foreach ($cuentas as $cuenta)
-                            <option value="{{ $cuenta->id }}" @selected((string) old('cuenta_id') === (string) $cuenta->id)>
+                            <option value="{{ $cuenta->id }}" data-moneda="{{ $cuenta->moneda }}" @selected((string) old('cuenta_id') === (string) $cuenta->id)>
                                 {{ $cuenta->nombre }} ({{ __("account_type.{$cuenta->tipo}") }})
                             </option>
                         @endforeach
@@ -116,12 +116,32 @@
                     >
                         <option value="">{{ __('Select an account') }}</option>
                         @foreach ($cuentas as $cuenta)
-                            <option value="{{ $cuenta->id }}" @selected((string) old('cuenta_destino_id') === (string) $cuenta->id)>
+                            <option value="{{ $cuenta->id }}" data-moneda="{{ $cuenta->moneda }}" @selected((string) old('cuenta_destino_id') === (string) $cuenta->id)>
                                 {{ $cuenta->nombre }} ({{ __("account_type.{$cuenta->tipo}") }})
                             </option>
                         @endforeach
                     </select>
                     @error('cuenta_destino_id')
+                        <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div @class(['space-y-1.5', 'hidden' => ! old('tipo_cambio')]) data-transaccion-tipo-cambio-wrap>
+                    <label for="transaccion-tipo-cambio" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        {{ __('Exchange rate') }} <span class="font-normal text-slate-400">({{ __('soles per dollar') }})</span>
+                    </label>
+                    <input
+                        id="transaccion-tipo-cambio"
+                        type="number"
+                        name="tipo_cambio"
+                        step="0.0001"
+                        min="0.0001"
+                        inputmode="decimal"
+                        value="{{ old('tipo_cambio') }}"
+                        class="auth-input @error('tipo_cambio') auth-input-error @enderror"
+                        data-transaccion-field="tipo_cambio"
+                    />
+                    @error('tipo_cambio')
                         <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
                     @enderror
                 </div>
@@ -157,7 +177,7 @@
                     type="number"
                     step="0.01"
                     min="0.01"
-                    :label="__('Amount in soles')"
+                    :label="__('Amount')"
                     icon="heroicon-o-banknotes"
                     value="{{ old('monto') }}"
                     required

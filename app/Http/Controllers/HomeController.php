@@ -21,7 +21,12 @@ class HomeController extends Controller
         return view('home', [
             'cuentas' => $usuario->cuentas()->with('principal')->orderBy('nombre')->get(),
             'categorias' => $usuario->categorias()->orderBy('tipo')->orderBy('nombre')->get(),
-            'totalBalance' => (string) ($usuario->cuentas()->conSaldoPropio()->sum('saldo') ?? '0'),
+            'totalesPorMoneda' => $usuario->cuentas()
+                ->conSaldoPropio()
+                ->selectRaw('moneda, SUM(saldo) as total')
+                ->groupBy('moneda')
+                ->orderByRaw("CASE WHEN moneda = 'PEN' THEN 0 ELSE 1 END")
+                ->pluck('total', 'moneda'),
         ]);
     }
 

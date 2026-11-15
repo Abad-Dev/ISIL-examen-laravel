@@ -26,15 +26,15 @@
 >
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-cuenta-modal-close></div>
 
-    <div class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
-        <div class="flex h-1.5">
+    <div class="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
+        <div class="flex h-1.5 shrink-0">
             <span class="flex-1 bg-palette-green"></span>
             <span class="flex-1 bg-palette-yellow"></span>
             <span class="flex-1 bg-palette-orange"></span>
             <span class="flex-1 bg-palette-red"></span>
         </div>
 
-        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
             <h2 id="cuenta-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white" data-cuenta-modal-title>
                 {{ $isEdit ? __('Edit account') : __('New account') }}
             </h2>
@@ -51,7 +51,7 @@
         <form
             method="POST"
             action="{{ $formAction }}"
-            class="overflow-y-auto px-6 py-5"
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5"
             data-cuenta-form
             data-store-url="{{ route('cuentas.store') }}"
         >
@@ -94,6 +94,28 @@
                 </div>
 
                 <div class="space-y-1.5">
+                    <label for="cuenta-moneda" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        {{ __('Currency') }}
+                    </label>
+                    <select
+                        id="cuenta-moneda"
+                        name="moneda"
+                        class="auth-input @error('moneda') auth-input-error @enderror"
+                        required
+                        data-cuenta-field="moneda"
+                    >
+                        @foreach (config('money.currencies') as $codigo => $moneda)
+                            <option value="{{ $codigo }}" @selected(old('moneda', 'PEN') === $codigo)>
+                                {{ $moneda['name'] }} ({{ $moneda['symbol'] }})
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('moneda')
+                        <p class="text-sm font-medium text-palette-red">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-1.5">
                     <label for="cuenta-principal" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         {{ __('Shares balance with') }} <span class="font-normal text-slate-400">({{ __('Optional') }})</span>
                     </label>
@@ -105,7 +127,7 @@
                     >
                         <option value="">{{ __('Own balance') }}</option>
                         @foreach ($cuentasPrincipales as $principal)
-                            <option value="{{ $principal->id }}" @selected((string) old('cuenta_principal_id') === (string) $principal->id)>
+                            <option value="{{ $principal->id }}" data-moneda="{{ $principal->moneda }}" @selected((string) old('cuenta_principal_id') === (string) $principal->id)>
                                 {{ $principal->nombre }}
                             </option>
                         @endforeach
@@ -122,13 +144,13 @@
                         type="number"
                         step="0.01"
                         min="0"
-                        :label="__('Balance in soles')"
+                        :label="__('Balance')"
                         icon="heroicon-o-banknotes"
                         value="{{ old('saldo') }}"
                         placeholder="0.00"
                         data-cuenta-field="saldo"
                     />
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('All amounts in the app are in Peruvian soles (PEN).') }}</p>
+                    <p class="hidden text-xs text-slate-500 dark:text-slate-400" data-cuenta-saldo-compartido>{{ __('This balance is shared by all the unified accounts.') }}</p>
                 </div>
 
                 <div class="space-y-2">

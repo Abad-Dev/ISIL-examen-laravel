@@ -115,10 +115,60 @@ function initQuickTransaction() {
         }
     };
 
+    const cuentaField = form.querySelector('[data-quick-transaction-field="cuenta_id"]');
+    const cuentaDestinoField = form.querySelector('[data-quick-transaction-field="cuenta_destino_id"]');
+    const simbolo = form.querySelector('[data-quick-transaction-simbolo]');
+    const tipoCambioWrap = form.querySelector('[data-quick-transaction-tipo-cambio]');
+    const tipoCambioField = form.querySelector('[data-quick-transaction-field="tipo_cambio"]');
+    const conversion = form.querySelector('[data-quick-transaction-conversion]');
+    const monedaPrincipal = 'PEN';
+
+    const syncMoneda = () => {
+        const origen = cuentaField?.selectedOptions[0];
+        const destino = cuentaDestinoField?.selectedOptions[0];
+
+        if (simbolo && origen?.dataset.simbolo) {
+            simbolo.textContent = origen.dataset.simbolo;
+        }
+
+        const needsRate = form.dataset.tipo === 'transferencia'
+            && Boolean(origen?.dataset.moneda && destino?.dataset.moneda)
+            && origen.dataset.moneda !== destino.dataset.moneda;
+
+        tipoCambioWrap?.classList.toggle('hidden', !needsRate);
+
+        if (tipoCambioField) {
+            tipoCambioField.required = needsRate;
+            tipoCambioField.disabled = !needsRate;
+        }
+
+        if (!conversion) {
+            return;
+        }
+
+        const monto = Number.parseFloat(hiddenInput?.value || '0');
+        const rate = Number.parseFloat(tipoCambioField?.value || '0');
+
+        if (!needsRate || !(monto > 0) || !(rate > 0)) {
+            conversion.textContent = '';
+            return;
+        }
+
+        // El tipo de cambio siempre se expresa en soles por unidad de la otra moneda.
+        const recibido = origen.dataset.moneda === monedaPrincipal ? monto / rate : monto * rate;
+        conversion.textContent = `${destino.textContent.trim()} recibirá ${destino.dataset.simbolo} ${recibido.toFixed(2)}`;
+    };
+
+    cuentaField?.addEventListener('change', syncMoneda);
+    cuentaDestinoField?.addEventListener('change', syncMoneda);
+    tipoCambioField?.addEventListener('input', syncMoneda);
+    displayInput?.addEventListener('keydown', () => setTimeout(syncMoneda));
+
     const setTipo = (tipo) => {
         form.dataset.tipo = tipo;
         syncCategoriaForTipo(tipo);
         syncNuevaCategoria();
+        syncMoneda();
     };
 
     form.querySelectorAll('[data-quick-transaction-tipo]').forEach((radio) => {

@@ -14,7 +14,7 @@ class DashboardSummaryService
         $now = Carbon::now(config('app.timezone'));
 
         return [
-            'totalBalance' => (string) ($usuario->cuentas()->conSaldoPropio()->sum('saldo') ?? '0'),
+            'totalBalance' => (string) ($usuario->cuentas()->conSaldoPropio()->where('moneda', Money::currency())->sum('saldo') ?? '0'),
             'today' => $this->periodStats(
                 $usuario,
                 $now->copy()->startOfDay(),
@@ -39,6 +39,7 @@ class DashboardSummaryService
         $toExclusive = $month->copy()->startOfMonth()->addMonth()->toDateString();
 
         $categories = $usuario->transacciones()
+            ->enMonedaPrincipal()
             ->with('categoria:id,nombre,color_hex')
             ->where('tipo', 'gasto')
             ->where('fecha', '>=', $fromDate)
@@ -73,12 +74,14 @@ class DashboardSummaryService
         $toExclusive = $to->copy()->addDay()->toDateString();
 
         $ingresos = (string) ($usuario->transacciones()
+            ->enMonedaPrincipal()
             ->where('tipo', 'ingreso')
             ->where('fecha', '>=', $fromDate)
             ->where('fecha', '<', $toExclusive)
             ->sum('monto') ?? '0');
 
         $gastos = (string) ($usuario->transacciones()
+            ->enMonedaPrincipal()
             ->where('tipo', 'gasto')
             ->where('fecha', '>=', $fromDate)
             ->where('fecha', '<', $toExclusive)

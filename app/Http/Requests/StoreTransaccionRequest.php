@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Cuenta;
+use App\Support\Money;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,6 +22,10 @@ class StoreTransaccionRequest extends FormRequest
             $this->merge(['categoria_id' => null, 'nueva_categoria' => null]);
         } else {
             $this->merge(['cuenta_destino_id' => null]);
+        }
+
+        if (! $this->requiereTipoCambio()) {
+            $this->merge(['tipo_cambio' => null]);
         }
 
         if ($this->input('categoria_id') !== self::NUEVA_CATEGORIA) {
@@ -62,6 +67,13 @@ class StoreTransaccionRequest extends FormRequest
                 }),
             ],
             'nueva_categoria' => ['nullable', 'string', 'max:80'],
+            'tipo_cambio' => [
+                Rule::requiredIf(fn () => $this->requiereTipoCambio()),
+                'nullable',
+                'numeric',
+                'gt:0',
+                'max:999999',
+            ],
             'tipo' => ['required', 'in:ingreso,gasto,transferencia'],
             'monto' => ['required', 'numeric', 'min:0.01'],
             'descripcion' => ['nullable', 'string', 'max:255'],
@@ -74,7 +86,25 @@ class StoreTransaccionRequest extends FormRequest
         return [
             'cuenta_destino_id' => __('Destination account'),
             'nueva_categoria' => __('New category'),
+            'tipo_cambio' => __('Exchange rate'),
         ];
+    }
+
+    /**
+     * Una transferencia entre cuentas de distinta moneda necesita tipo de cambio.
+     */
+    private function requiereTipoCambio(): bool
+    {
+        if ($this->input('tipo') !== 'transferencia') {
+            return false;
+        }
+
+        $monedas = Cuenta::query()
+            ->where('usuario_id', auth()->id())
+            ->whereIn('id', [$this->input('cuenta_id'), $this->input('cuenta_destino_id')])
+            ->pluck('moneda', 'id');
+
+        return $monedas->count() === 2 && $monedas->unique()->count() === 2;
     }
 
     /**
@@ -83,6 +113,13 @@ class StoreTransaccionRequest extends FormRequest
     public function transaccionData(): array
     {
         $data = collect($this->validated())->except('nueva_categoria')->all();
+        $data['monto_destino'] = null;
+
+        if ($data['tipo_cambio'] !== null) {
+            $origen = Cuenta::findOrFail($data['cuenta_id']);
+            $destino = Cuenta::findOrFail($data['cuenta_destino_id']);
+            $data['monto_destino'] = Money::convert($data['monto'], $origen->moneda, $destino->moneda, $data['tipo_cambio']);
+        }
         $nombre = trim((string) $this->validated('nueva_categoria'));
 
         if ($nombre !== '') {

@@ -44,20 +44,49 @@ function initCuentaModal() {
         });
     };
 
+    let principalOriginal = '';
+
     const syncSaldoVisibility = () => {
         const principalField = form?.querySelector('[data-cuenta-field="cuenta_principal_id"]');
         const saldoWrap = form?.querySelector('[data-cuenta-saldo-wrap]');
         const saldoField = form?.querySelector('[data-cuenta-field="saldo"]');
+        const compartidoHint = form?.querySelector('[data-cuenta-saldo-compartido]');
         const linked = Boolean(principalField?.value);
+        // Al cambiar de vínculo el saldo se fusiona; si el vínculo se mantiene, se edita el saldo compartido.
+        const hideSaldo = linked && principalField.value !== principalOriginal;
 
-        saldoWrap?.classList.toggle('hidden', linked);
+        saldoWrap?.classList.toggle('hidden', hideSaldo);
+        compartidoHint?.classList.toggle('hidden', !linked || hideSaldo);
 
         if (saldoField) {
-            saldoField.required = !linked;
+            saldoField.required = !hideSaldo;
         }
     };
 
+    const syncPrincipalOptions = () => {
+        const principalField = form?.querySelector('[data-cuenta-field="cuenta_principal_id"]');
+        const moneda = form?.querySelector('[data-cuenta-field="moneda"]')?.value;
+
+        if (!principalField) {
+            return;
+        }
+
+        // Solo se pueden unificar cuentas de la misma moneda.
+        Array.from(principalField.options).forEach((option) => {
+            if (option.value !== '') {
+                option.disabled = option.dataset.moneda !== moneda || option.hidden;
+            }
+        });
+
+        if (principalField.selectedOptions[0]?.disabled) {
+            principalField.value = '';
+        }
+
+        syncSaldoVisibility();
+    };
+
     form?.querySelector('[data-cuenta-field="cuenta_principal_id"]')?.addEventListener('change', syncSaldoVisibility);
+    form?.querySelector('[data-cuenta-field="moneda"]')?.addEventListener('change', syncPrincipalOptions);
 
     const setFormMode = (mode, data = {}) => {
         if (!form) {
@@ -105,13 +134,20 @@ function initCuentaModal() {
             saldoField.value = isEdit ? data.saldo ?? '' : '';
         }
 
+        const monedaField = form.querySelector('[data-cuenta-field="moneda"]');
+
+        if (monedaField) {
+            monedaField.value = isEdit ? data.moneda ?? 'PEN' : 'PEN';
+        }
+
         if (principalField) {
-            principalField.value = isEdit ? data.principalId ?? '' : '';
+            principalOriginal = isEdit ? data.principalId ?? '' : '';
+            principalField.value = principalOriginal;
             // Una cuenta no puede compartir saldo consigo misma.
             Array.from(principalField.options).forEach((option) => {
                 option.hidden = isEdit && option.value !== '' && option.value === data.id;
             });
-            syncSaldoVisibility();
+            syncPrincipalOptions();
         }
 
         const icon = isEdit ? data.icon : iconInput?.value;
@@ -156,6 +192,7 @@ function initCuentaModal() {
                 openModal('edit', {
                     id: element.dataset.cuentaId,
                     principalId: element.dataset.cuentaPrincipalId,
+                    moneda: element.dataset.cuentaMoneda,
                     updateUrl: element.dataset.cuentaUpdateUrl,
                     nombre: element.dataset.cuentaNombre,
                     tipo: element.dataset.cuentaTipo,

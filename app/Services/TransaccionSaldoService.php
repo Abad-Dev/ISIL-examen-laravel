@@ -10,17 +10,17 @@ class TransaccionSaldoService
 {
     public function apply(Transaccion $transaccion): void
     {
-        $this->applyValues($transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto']), 1);
+        $this->applyValues($transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto', 'monto_destino']), 1);
     }
 
     public function reverse(Transaccion $transaccion): void
     {
-        $this->applyValues($transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto']), -1);
+        $this->applyValues($transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto', 'monto_destino']), -1);
     }
 
     public function syncOnUpdate(Transaccion $transaccion, array $original): void
     {
-        $saldoFields = ['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto'];
+        $saldoFields = ['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto', 'monto_destino'];
         $changed = collect($saldoFields)->contains(fn (string $field) => $transaccion->{$field} != ($original[$field] ?? null));
 
         if (! $changed) {
@@ -37,7 +37,8 @@ class TransaccionSaldoService
 
         if ($values['tipo'] === 'transferencia') {
             $this->adjust((int) $values['cuenta_id'], Money::mul($monto, '-1'), $direction);
-            $this->adjust((int) $values['cuenta_destino_id'], $monto, $direction);
+            // En transferencias entre monedas distintas, el destino recibe el monto convertido.
+            $this->adjust((int) $values['cuenta_destino_id'], (string) ($values['monto_destino'] ?? $monto), $direction);
 
             return;
         }

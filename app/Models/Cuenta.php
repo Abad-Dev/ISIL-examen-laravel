@@ -17,6 +17,7 @@ class Cuenta extends Model
         'cuenta_principal_id',
         'nombre',
         'tipo',
+        'moneda',
         'saldo',
         'icon',
         'color_hex',

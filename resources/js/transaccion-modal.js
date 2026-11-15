@@ -30,16 +30,32 @@ function initTransaccionModal() {
     const categoriaWrap = form?.querySelector('[data-transaccion-categoria-wrap]');
     const cuentaDestinoWrap = form?.querySelector('[data-transaccion-cuenta-destino-wrap]');
 
+    const cuentaField = form?.querySelector('[data-transaccion-field="cuenta_id"]');
+    const tipoCambioWrap = form?.querySelector('[data-transaccion-tipo-cambio-wrap]');
+    const tipoCambioField = form?.querySelector('[data-transaccion-field="tipo_cambio"]');
+
     const syncTransferencia = () => {
         const isTransferencia = tipoField?.value === 'transferencia';
+        const monedaOrigen = cuentaField?.selectedOptions[0]?.dataset.moneda;
+        const monedaDestino = cuentaDestinoField?.selectedOptions[0]?.dataset.moneda;
+        const needsRate = isTransferencia && Boolean(monedaOrigen && monedaDestino) && monedaOrigen !== monedaDestino;
 
         categoriaWrap?.classList.toggle('hidden', isTransferencia);
         cuentaDestinoWrap?.classList.toggle('hidden', !isTransferencia);
+        tipoCambioWrap?.classList.toggle('hidden', !needsRate);
 
         if (cuentaDestinoField) {
             cuentaDestinoField.required = isTransferencia;
         }
+
+        if (tipoCambioField) {
+            tipoCambioField.required = needsRate;
+            tipoCambioField.disabled = !needsRate;
+        }
     };
+
+    cuentaField?.addEventListener('change', syncTransferencia);
+    cuentaDestinoField?.addEventListener('change', syncTransferencia);
 
     const filterCategorias = () => {
         syncTransferencia();
@@ -118,6 +134,12 @@ function initTransaccionModal() {
             cuentaDestinoField.value = isEdit ? data.cuentaDestinoId ?? '' : '';
         }
 
+        if (tipoCambioField) {
+            tipoCambioField.value = isEdit ? data.tipoCambio ?? '' : '';
+        }
+
+        syncTransferencia();
+
         if (montoField) {
             montoField.value = isEdit ? data.monto ?? '' : '';
         }
@@ -155,6 +177,7 @@ function initTransaccionModal() {
                     updateUrl: element.dataset.transaccionUpdateUrl,
                     cuentaId: element.dataset.transaccionCuentaId,
                     cuentaDestinoId: element.dataset.transaccionCuentaDestinoId,
+                    tipoCambio: element.dataset.transaccionTipoCambio,
                     categoriaId: element.dataset.transaccionCategoriaId,
                     tipo: element.dataset.transaccionTipo,
                     monto: element.dataset.transaccionMonto,

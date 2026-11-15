@@ -22,7 +22,7 @@
         @else
             <x-dashboard.quick-transaction :cuentas="$cuentas" :categorias="$categorias" />
 
-            <x-dashboard.account-balances :cuentas="$cuentas" :total-balance="$totalBalance" />
+            <x-dashboard.account-balances :cuentas="$cuentas" :totales-por-moneda="$totalesPorMoneda" />
         @endif
     </div>
 @endsection

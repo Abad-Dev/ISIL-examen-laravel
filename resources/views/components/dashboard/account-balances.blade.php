@@ -1,13 +1,17 @@
 @props([
     'cuentas',
-    'totalBalance',
+    'totalesPorMoneda',
 ])
 
 <x-auth.card :title="__('My accounts')" :subtitle="__('What is left in each account.')">
     <div class="mb-4 flex items-baseline justify-between gap-4 rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800/60">
         <span class="text-sm font-medium text-slate-600 dark:text-slate-300">{{ __('Total balance') }}</span>
-        <span class="text-xl font-semibold tabular-nums text-slate-800 dark:text-white">
-            <x-money :amount="$totalBalance" />
+        <span class="flex flex-col items-end text-xl font-semibold tabular-nums text-slate-800 dark:text-white">
+            @forelse ($totalesPorMoneda as $moneda => $total)
+                <span><x-money :amount="$total" :currency="$moneda" /></span>
+            @empty
+                <span><x-money :amount="0" /></span>
+            @endforelse
         </span>
     </div>
 
@@ -38,7 +42,7 @@
                     'text-slate-800 dark:text-white' => (float) $cuenta->saldo_actual >= 0,
                     'text-palette-red' => (float) $cuenta->saldo_actual < 0,
                 ])>
-                    <x-money :amount="$cuenta->saldo_actual" />
+                    <x-money :amount="$cuenta->saldo_actual" :currency="$cuenta->moneda" />
                 </p>
             </li>
         @endforeach

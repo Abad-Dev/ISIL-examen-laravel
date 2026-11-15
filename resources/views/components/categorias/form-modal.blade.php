@@ -25,15 +25,15 @@
 >
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-categoria-modal-close></div>
 
-    <div class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
-        <div class="flex h-1.5">
+    <div class="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
+        <div class="flex h-1.5 shrink-0">
             <span class="flex-1 bg-palette-green"></span>
             <span class="flex-1 bg-palette-yellow"></span>
             <span class="flex-1 bg-palette-orange"></span>
             <span class="flex-1 bg-palette-red"></span>
         </div>
 
-        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
             <h2 id="categoria-modal-title" class="text-lg font-semibold text-slate-800 dark:text-white" data-categoria-modal-title>
                 {{ $isEdit ? __('Edit category') : __('New category') }}
             </h2>
@@ -50,7 +50,7 @@
         <form
             method="POST"
             action="{{ $formAction }}"
-            class="overflow-y-auto px-6 py-5"
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5"
             data-categoria-form
             data-store-url="{{ route('web.categorias.store') }}"
         >

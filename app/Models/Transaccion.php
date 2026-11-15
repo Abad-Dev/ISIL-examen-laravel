@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Money;
 use Illuminate\Support\Carbon;
 
 class Transaccion extends Model
@@ -20,6 +21,8 @@ class Transaccion extends Model
         'categoria_id',
         'tipo',
         'monto',
+        'tipo_cambio',
+        'monto_destino',
         'descripcion',
         'fecha',
     ];
@@ -27,6 +30,8 @@ class Transaccion extends Model
     protected $casts = [
         'fecha' => 'date',
         'monto' => 'decimal:2',
+        'tipo_cambio' => 'decimal:4',
+        'monto_destino' => 'decimal:2',
     ];
 
     public function scopeFilter(Builder $query, array $filters): Builder
@@ -68,6 +73,14 @@ class Transaccion extends Model
         }
 
         return $query;
+    }
+
+    /**
+     * Movimientos de cuentas en soles: los resúmenes no mezclan monedas.
+     */
+    public function scopeEnMonedaPrincipal(Builder $query): Builder
+    {
+        return $query->whereHas('cuenta', fn (Builder $cuenta) => $cuenta->where('moneda', Money::currency()));
     }
 
     public function usuario()

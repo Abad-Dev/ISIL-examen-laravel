@@ -25,6 +25,16 @@ class UpdateCuentaRequest extends StoreCuentaRequest
             }
         };
 
+        $rules['moneda'][] = function (string $attribute, mixed $value, \Closure $fail) use ($cuenta): void {
+            $enUso = $cuenta->transacciones()->exists()
+                || $cuenta->transferenciasRecibidas()->exists()
+                || $cuenta->vinculadas()->exists();
+
+            if ($value !== $cuenta->moneda && $enUso) {
+                $fail(__('The currency cannot be changed on an account that is already in use.'));
+            }
+        };
+
         return $rules;
     }
 }

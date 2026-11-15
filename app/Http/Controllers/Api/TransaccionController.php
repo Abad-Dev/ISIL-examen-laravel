@@ -49,7 +49,7 @@ class TransaccionController extends Controller
         $this->authorizeOwner($transaccion);
 
         $transaccion = DB::transaction(function () use ($request, $transaccion) {
-            $original = $transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto']);
+            $original = $transaccion->only(['cuenta_id', 'cuenta_destino_id', 'tipo', 'monto', 'monto_destino']);
             $transaccion->update($request->transaccionData());
             $this->saldoService->syncOnUpdate($transaccion, $original);
 
